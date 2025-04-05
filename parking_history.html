@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            margin: 0;
+        }
+
+        .header {
+            background-color: #004899;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #004899;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo.png" alt="Logo">
+        <h1>SmartPark</h1>
+    </div>
+    <div class="container">
+        <h2>Your Previous Bookings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Slot Number</th>
+                    <th>Basement Level</th>
+                    <th>Vehicle Type</th>
+                    <th>Booking Time</th>
+                </tr>
+            </thead>
+            <tbody id="history-table">
+                <!-- Booking history will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let history = JSON.parse(localStorage.getItem("parkingHistory")) || [
+                { slot: "A1", basement: "B1", vehicle: "Car", time: "2024-06-25 10:00 AM" },
+                { slot: "B2", basement: "B2", vehicle: "Bike", time: "2024-06-26 11:30 AM" },
+                { slot: "C3", basement: "B3", vehicle: "Car", time: "2024-06-27 02:00 PM" }
+            ];
+            localStorage.setItem("parkingHistory", JSON.stringify(history));
+            
+            let historyTable = document.getElementById("history-table");
+            
+            history.forEach(entry => {
+                let row = `<tr>
+                    <td>${entry.slot}</td>
+                    <td>${entry.basement}</td>
+                    <td>${entry.vehicle}</td>
+                    <td>${entry.time}</td>
+                </tr>`;
+                historyTable.innerHTML += row;
+            });
+        });
+    </script>
+</body>
+</html>

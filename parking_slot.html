@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Complete Parking Solution</title>
+    <style>
+        :root {
+            --primary-color: #004899;
+            --primary-light: #3a6fb0;
+            --secondary-color: #f8f9fa;
+            --available-color: #28a745;
+            --occupied-color: #dc3545;
+            --reserved-color: #ffc107;
+            --processing-color: #17a2b8;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ddd;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ddd;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .step.active .step-number {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .step.completed .step-label {
+            color: var(--success-color);
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 72, 153, 0.2);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        button:hover {
+            background-color: var(--primary-light);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .parking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 1rem;
+        }
+
+        .slot {
+            padding: 1rem 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slot:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .slot-price {
+            font-size: 0.8rem;
+            font-weight: normal;
+            margin-top: 0.25rem;
+        }
+
+        .available {
+            background-color: var(--available-color);
+            color: white;
+        }
+
+        .occupied {
+            background-color: var(--occupied-color);
+            color: white;
+        }
+
+        .reserved {
+            background-color: var(--reserved-color);
+            color: #333;
+        }
+
+        .processing {
+            background-color: var(--processing-color);
+            color: white;
+        }
+
+        .status-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 1rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+        }
+
+        .basement-section {
+            margin-bottom: 2rem;
+        }
+
+        .basement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .basement-header h3 {
+            color: var(--primary-color);
+        }
+
+        .basement-status {
+            font-weight: 500;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .secondary-btn {
+            background-color: #6c757d;
+        }
+
+        .secondary-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-color);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(0, 72, 153, 0.05);
+        }
+
+        .payment-method img {
+            width: 40px;
+            margin-right: 1rem;
+        }
+
+        .payment-details {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .payment-details.active {
+            display: block;
+        }
+
+        .confirmation {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .confirmation-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .confirmation h3 {
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-details {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .confirmation-details p {
+            margin-bottom: 0.5rem;
+        }
+
+        .confirmation-details strong {
+            display: inline-block;
+            width: 120px;
+        }
+
+        @media (max-width: 768px) {
+            .parking-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+            
+            .form-group {
+                flex-direction: column;
+            }
+            
+            .form-control {
+                width: 100%;
+            }
+
+            .step-label {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="logo.jpg" alt="SmartPark Logo">
+            <h1>SmartPark</h1>
+        </div>
+        <nav class="nav-links">
+            <a href="user_dashboard.html">Home</a>
+            <a href="#">Locations</a>
+            <a href="location_pricing.html">Pricing</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <div class="step-indicator">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-label">Location & Vehicle</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-label">Select Parking</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-label">Payment</div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-number">4</div>
+                <div class="step-label">Confirmation</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Location Selection -->
+        <section class="form-section active" id="location-section">
+            <h2>Where Are You Parking Today?</h2>
+            <div class="form-group">
+                <div class="form-control">
+                    <label for="from-location">From (Current Location)</label>
+                    <input type="text" id="from-location" placeholder="Enter your current location">
+                </div>
+                <div class="form-control">
+                    <label for="to-location">Destination</label>
+                    <input type="text" id="to-location" placeholder="Enter your destination">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-control">
+                    <label for="vehicle-type">Vehicle Type</label>
+                    <select id="vehicle-type">
+                        <option value="">Select vehicle type</option>
+                        <option value="bike">Motorcycle/Scooter</option>
+                        <option value="car">Car/SUV</option>
+                        <option value="heavy">Truck/Heavy Vehicle</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label for="parking-time">Estimated Parking Duration</label>
+                    <select id="parking-time">
+                        <option value="1">Up to 1 hour</option>
+                        <option value="2">1-2 hours</option>
+                        <option value="4">2-4 hours</option>
+                        <option value="8">4-8 hours</option>
+                        <option value="24">All day</option>
+                    </select>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button id="find-parking-btn" onclick="nextStep(2)">Find Parking</button>
+            </div>
+        </section>
+
+        <!-- Step 2: Parking Selection -->
+        <section class="form-section" id="parking-section">
+            <h2>Available Parking in <span id="destination-display"></span></h2>
+
+            <div class="status-legend">
+                <div class="legend-item">
+                    <div class="legend-color available"></div>
+                    <span>Available</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color occupied"></div>
+                    <span>Occupied</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color reserved"></div>
+                    <span>Reserved</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color processing"></div>
+                    <span>In Process</span>
+                </div>
+            </div>
+
+            <div class="basement-section" id="B1-section">
+                <div class="basement-header">
+                    <h3>Basement Parking - 3</h3>
+                    <div class="basement-status" id="B1-status"></div>
+                </div>
+                <div class="parking-grid" id="B1"></div>
+            </div>
+
+            <div class="basement-section" id="B2-section">
+                <div class="basement-header">
+                    <h3>Basement Parking - 2</h3>
+                    <div class="basement-status" id="B2-status"></div>
+                </div>
+                <div class="parking-grid" id="B2"></div>
+            </div>
+
+            <div class="basement-section" id="B3-section">
+                <div class="basement-header">
+                    <h3>Basement Parking - 1</h3>
+                    <div class="basement-status" id="B3-status"></div>
+                </div>
+                <div class="parking-grid" id="B3"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="secondary-btn" onclick="prevStep()">Back</button>
+                <button id="proceed-to-payment-btn" disabled onclick="nextStep(3)">Proceed to Payment</button>
+            </div>
+        </section>
+
+        <!-- Step 3: Payment -->
+        <section class="form-section" id="payment-section">
+            <h2>Payment Details</h2>
+            
+            <div class="confirmation-details">
+                <p><strong>Parking Location:</strong> <span id="payment-location"></span></p>
+                <p><strong>Parking Slot:</strong> <span id="payment-slot"></span></p>
+                <p><strong>Vehicle Type:</strong> <span id="payment-vehicle"></span></p>
+                <p><strong>Duration:</strong> <span id="payment-duration"></span></p>
+                <p><strong>Arrival Time:</strong> <span id="payment-time"></span></p>
+                <p><strong>Total Amount:</strong> $<span id="payment-amount"></span></p>
+            </div>
+
+            <h3 style="margin: 1.5rem 0 1rem;">Select Payment Method</h3>
+            
+            <div class="payment-methods">
+                <div class="payment-method" onclick="selectPaymentMethod('credit')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/179/179457.png" alt="Credit Card">
+                    <div>
+                        <h4>Credit/Debit Card</h4>
+                        <p>Visa, Mastercard, American Express</p>
+                    </div>
+                </div>
+                
+                <div class="payment-method" onclick="selectPaymentMethod('paypal')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174861.png" alt="PayPal">
+                    <div>
+                        <h4>PayPal</h4>
+                        <p>Pay with your PayPal account</p>
+                    </div>
+                </div>
+                
+                <div class="payment-method" onclick="selectPaymentMethod('wallet')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2504/2504939.png" alt="Digital Wallet">
+                    <div>
+                        <h4>Digital Wallet</h4>
+                        <p>Apple Pay, Google Pay, etc.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-details" id="credit-card-details">
+                <div class="form-group">
+                    <div class="form-control">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-control">
+                        <label for="card-name">Name on Card</label>
+                        <input type="text" id="card-name" placeholder="John Doe">
+                    </div>
+                    <div class="form-control">
+                        <label for="card-expiry">Expiry Date</label>
+                        <input type="text" id="card-expiry" placeholder="MM/YY">
+                    </div>
+                    <div class="form-control">
+                        <label for="card-cvv">CVV</label>
+                        <input type="text" id="card-cvv" placeholder="123">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-details" id="paypal-details">
+                <p>You will be redirected to PayPal to complete your payment.</p>
+            </div>
+
+            <div class="payment-details" id="wallet-details">
+                <p>Select your digital wallet app when prompted to complete payment.</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="secondary-btn" onclick="prevStep()">Back</button>
+                <button id="confirm-payment-btn" onclick="processPayment()">Confirm Payment</button>
+            </div>
+        </section>
+
+        <!-- Step 4: Confirmation -->
+        <section class="form-section" id="confirmation-section">
+            <div class="confirmation">
+                <div class="confirmation-icon">✓</div>
+                <h3>Booking Confirmed!</h3>
+                <p>Your parking reservation has been successfully booked.</p>
+                
+                <div class="confirmation-details">
+                    <p><strong>Booking ID:</strong> <span id="confirmation-id"></span></p>
+                    <p><strong>Location:</strong> <span id="confirmation-location"></span></p>
+                    <p><strong>Slot Number:</strong> <span id="confirmation-slot"></span></p>
+                    <p><strong>Vehicle Type:</strong> <span id="confirmation-vehicle"></span></p>
+                    <p><strong>Duration:</strong> <span id="confirmation-duration"></span></p>
+                    <p><strong>Arrival Time:</strong> <span id="confirmation-time"></span></p>
+                    <p><strong>Amount Paid:</strong> $<span id="confirmation-amount"></span></p>
+                    <p><strong>Payment Method:</strong> <span id="confirmation-method"></span></p>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button onclick="downloadTicket()">Download Parking Ticket</button>
+                    <button class="secondary-btn" style="margin-left: 1rem;" onclick="newBooking()">New Booking</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="booking-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reserve Your Parking Spot</h3>
+                <button class="close-modal" onclick="closeBookingModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="selected-slot-info"></p>
+                <p id="selected-price"></p>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <div class="form-control">
+                        <label for="booking-time">Arrival Time</label>
+                        <input type="datetime-local" id="booking-time">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="closeBookingModal()">Cancel</button>
+                <button onclick="confirmBooking()">Confirm Reservation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Parking data structure
+        const parkingData = {
+            locations: {
+                "B1": {
+                    name: "Downtown Parking Plaza",
+                    distance: "0.3 miles",
+                    pricing: {
+                        "bike": { base: 2, hourly: 1 },
+                        "car": { base: 5, hourly: 2 },
+                        "heavy": { base: 10, hourly: 5 }
+                    }
+                },
+                "B2": {
+                    name: "Central Business Garage",
+                    distance: "0.5 miles",
+                    pricing: {
+                        "bike": { base: 1.5, hourly: 0.75 },
+                        "car": { base: 4, hourly: 1.5 },
+                        "heavy": { base: 8, hourly: 4 }
+                    }
+                },
+                "B3": {
+                    name: "Riverside Parking Complex",
+                    distance: "0.8 miles",
+                    pricing: {
+                        "bike": { base: 1, hourly: 0.5 },
+                        "car": { base: 3, hourly: 1 },
+                        "heavy": { base: 7, hourly: 3 }
+                    }
+                }
+            },
+            slots: {}
+        };
+
+        // Current booking information
+        let currentBooking = {
+            from: "",
+            to: "",
+            vehicle: "",
+            duration: 1,
+            selectedSlot: null,
+            paymentMethod: null,
+            bookingTime: null,
+            totalPrice: 0,
+            bookingId: ""
+        };
+
+        // Initialize the app
+        function init() {
+            // Generate random slot availability data
+            generateParkingData();
+            
+            // Set default arrival time to now + 30 minutes
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + 30);
+            document.getElementById('booking-time').valueAsDateTime = now.toISOString().slice(0, 16);
+        }
+
+        // Generate random parking data
+        function generateParkingData() {
+            const basements = ["B1", "B2", "B3"];
+            const vehicleTypes = ["bike", "car", "heavy"];
+            
+            basements.forEach(basement => {
+                parkingData.slots[basement] = {};
+                vehicleTypes.forEach(vehicle => {
+                    // Generate between 10-20 slots per basement per vehicle type
+                    const slotCount = vehicle === "bike" ? 20 : 
+                                      vehicle === "car" ? 15 : 10;
+                    
+                    parkingData.slots[basement][vehicle] = Array.from({length: slotCount}, () => {
+                        const rand = Math.random();
+                        if (rand < 0.6) return 0; // Available
+                        if (rand < 0.9) return 1; // Occupied
+                        if (rand < 0.95) return 2; // Reserved
+                        return 3; // In Process
+                    });
+                });
+            });
+        }
+
+        // Move to next step
+        function nextStep(step) {
+            // Validate current step before proceeding
+            if (step === 2 && !validateStep1()) return;
+            if (step === 3 && !currentBooking.selectedSlot) {
+                alert("Please select a parking slot first");
+                return;
+            }
+            if (step === 4 && !currentBooking.paymentMethod) {
+                alert("Please select a payment method");
+                return;
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show the requested section
+            document.getElementById(getSectionId(step)).classList.add('active');
+
+            // Update step indicator
+            updateStepIndicator(step);
+
+            // Special handling for each step
+            switch(step) {
+                case 2:
+                    displayParkingSlots();
+                    break;
+                case 3:
+                    displayPaymentDetails();
+                    break;
+                case 4:
+                    displayConfirmation();
+                    break;
+            }
+        }
+
+        // Go back to previous step
+        function prevStep() {
+            const currentActive = document.querySelector('.form-section.active');
+            const currentStep = parseInt(currentActive.id.split('-')[1]);
+            
+            if (currentStep > 1) {
+                nextStep(currentStep - 1);
+            }
+        }
+
+        // Get section ID for step
+        function getSectionId(step) {
+            return ['location', 'parking', 'payment', 'confirmation'][step - 1] + '-section';
+        }
+
+        // Update step indicator UI
+        function updateStepIndicator(currentStep) {
+            for (let i = 1; i <= 4; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                if (i < currentStep) {
+                    stepElement.classList.remove('active');
+                    stepElement.classList.add('completed');
+                } else if (i === currentStep) {
+                    stepElement.classList.add('active');
+                    stepElement.classList.remove('completed');
+                } else {
+                    stepElement.classList.remove('active', 'completed');
+                }
+            }
+        }
+
+        // Validate step 1 inputs
+        function validateStep1() {
+            const fromLocation = document.getElementById('from-location').value;
+            const toLocation = document.getElementById('to-location').value;
+            const vehicleType = document.getElementById('vehicle-type').value;
+            
+            if (!fromLocation || !toLocation || !vehicleType) {
+                alert("Please fill in all required fields");
+                return false;
+            }
+            
+            // Save the data
+            currentBooking.from = fromLocation;
+            currentBooking.to = toLocation;
+            currentBooking.vehicle = vehicleType;
+            currentBooking.duration = parseInt(document.getElementById('parking-time').value);
+            
+            // Update destination display
+            document.getElementById('destination-display').textContent = toLocation;
+            
+            return true;
+        }
+
+        // Display parking slots based on current search
+        function displayParkingSlots() {
+            const { vehicle, duration } = currentBooking;
+            
+            Object.keys(parkingData.slots).forEach(basement => {
+                const grid = document.getElementById(basement);
+                const statusDiv = document.getElementById(`${basement}-status`);
+                grid.innerHTML = "";
+                
+                const slots = parkingData.slots[basement][vehicle];
+                const availableCount = slots.filter(s => s === 0).length;
+                const totalCount = slots.length;
+                
+                // Update status
+                statusDiv.textContent = `${availableCount} of ${totalCount} slots available`;
+                
+                // Create slot elements
+                slots.forEach((slot, index) => {
+                    const slotElement = document.createElement('div');
+                    slotElement.className = 'slot';
+                    slotElement.textContent = `P${index + 1}`;
+                    
+                    // Calculate price for this slot
+                    const priceInfo = parkingData.locations[basement].pricing[vehicle];
+                    const totalPrice = priceInfo.base + (priceInfo.hourly * duration);
+                    
+                    // Add price element
+                    const priceElement = document.createElement('div');
+                    priceElement.className = 'slot-price';
+                    priceElement.textContent = `$${totalPrice.toFixed(2)}`;
+                    slotElement.appendChild(priceElement);
+                    
+                    // Set slot status
+                    switch(slot) {
+                        case 0: // Available
+                            slotElement.classList.add('available');
+                            slotElement.addEventListener('click', () => openBookingModal(basement, index, totalPrice));
+                            break;
+                        case 1: // Occupied
+                            slotElement.classList.add('occupied');
+                            break;
+                        case 2: // Reserved
+                            slotElement.classList.add('reserved');
+                            break;
+                        case 3: // In Process
+                            slotElement.classList.add('processing');
+                            break;
+                    }
+                    
+                    grid.appendChild(slotElement);
+                });
+            });
+        }
+
+        // Open booking modal
+        function openBookingModal(basement, slotIndex, price) {
+            const location = parkingData.locations[basement];
+            const slotNumber = `P${slotIndex + 1}`;
+            
+            document.getElementById('selected-slot-info').textContent = 
+                `Location: ${location.name} (${location.distance})\nSlot: ${slotNumber}`;
+                
+            document.getElementById('selected-price').textContent = 
+                `Total Price: $${price.toFixed(2)} (${currentBooking.duration} hrs)`;
+                
+            document.getElementById('booking-modal').style.display = 'flex';
+            
+            // Store the selected slot info temporarily
+            currentBooking.selectedSlot = { basement, slotIndex, price };
+        }
+
+        // Close booking modal
+        function closeBookingModal() {
+            document.getElementById('booking-modal').style.display = 'none';
+        }
+
+        // Confirm booking from modal
+        function confirmBooking() {
+            const bookingTime = document.getElementById('booking-time').value;
+            
+            if (!bookingTime) {
+                alert("Please select your arrival time");
+                return;
+            }
+            
+            // Save booking time
+            currentBooking.bookingTime = bookingTime;
+            currentBooking.totalPrice = currentBooking.selectedSlot.price;
+            
+            // Enable proceed to payment button
+            document.getElementById('proceed-to-payment-btn').disabled = false;
+            
+            // Close modal
+            closeBookingModal();
+            
+            // Show confirmation
+            alert(`Your parking spot has been reserved!\nTotal: $${currentBooking.totalPrice.toFixed(2)}`);
+        }
+
+        // Display payment details
+        function displayPaymentDetails() {
+            const location = parkingData.locations[currentBooking.selectedSlot.basement];
+            const slotNumber = `P${currentBooking.selectedSlot.slotIndex + 1}`;
+            const vehicleType = document.getElementById('vehicle-type').options[document.getElementById('vehicle-type').selectedIndex].text;
+            
+            document.getElementById('payment-location').textContent = `${location.name} (${location.distance})`;
+            document.getElementById('payment-slot').textContent = slotNumber;
+            document.getElementById('payment-vehicle').textContent = vehicleType;
+            document.getElementById('payment-duration').textContent = `${currentBooking.duration} hour${currentBooking.duration > 1 ? 's' : ''}`;
+            document.getElementById('payment-time').textContent = new Date(currentBooking.bookingTime).toLocaleString();
+            document.getElementById('payment-amount').textContent = currentBooking.totalPrice.toFixed(2);
+        }
+
+        // Select payment method
+        function selectPaymentMethod(method) {
+            currentBooking.paymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            event.currentTarget.classList.add('selected');
+            
+            // Show relevant payment details
+            document.querySelectorAll('.payment-details').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            document.getElementById(`${method}-details`).classList.add('active');
+        }
+
+        // Process payment
+        function processPayment() {
+            // Validate credit card details if that method is selected
+            if (currentBooking.paymentMethod === 'credit') {
+                const cardNumber = document.getElementById('card-number').value;
+                const cardName = document.getElementById('card-name').value;
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCvv = document.getElementById('card-cvv').value;
+                
+                if (!cardNumber || !cardName || !cardExpiry || !cardCvv) {
+                    alert("Please fill in all credit card details");
+                    return;
+                }
+                
+                if (!/^\d{16}$/.test(cardNumber.replace(/\s/g, ''))) {
+                    alert("Please enter a valid 16-digit card number");
+                    return;
+                }
+                
+                if (!/^\d{3,4}$/.test(cardCvv)) {
+                    alert("Please enter a valid CVV (3 or 4 digits)");
+                    return;
+                }
+            }
+            
+            // Generate a booking ID
+            currentBooking.bookingId = 'BK-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+            
+            // In a real app, you would send the payment details to your backend here
+            console.log("Processing payment:", currentBooking);
+            
+            // Move to confirmation step
+            nextStep(4);
+        }
+
+        // Display confirmation details
+        function displayConfirmation() {
+            const location = parkingData.locations[currentBooking.selectedSlot.basement];
+            const slotNumber = `P${currentBooking.selectedSlot.slotIndex + 1}`;
+            const vehicleType = document.getElementById('vehicle-type').options[document.getElementById('vehicle-type').selectedIndex].text;
+            const paymentMethod = document.querySelector('.payment-method.selected h4').textContent;
+            
+            document.getElementById('confirmation-id').textContent = currentBooking.bookingId;
+            document.getElementById('confirmation-location').textContent = `${location.name} (${location.distance})`;
+            document.getElementById('confirmation-slot').textContent = slotNumber;
+            document.getElementById('confirmation-vehicle').textContent = vehicleType;
+            document.getElementById('confirmation-duration').textContent = `${currentBooking.duration} hour${currentBooking.duration > 1 ? 's' : ''}`;
+            document.getElementById('confirmation-time').textContent = new Date(currentBooking.bookingTime).toLocaleString();
+            document.getElementById('confirmation-amount').textContent = currentBooking.totalPrice.toFixed(2);
+            document.getElementById('confirmation-method').textContent = paymentMethod;
+            
+            // Update the slot status to reserved in our data
+            parkingData.slots[currentBooking.selectedSlot.basement][currentBooking.vehicle][currentBooking.selectedSlot.slotIndex] = 2;
+        }
+
+        // Download parking ticket
+        function downloadTicket() {
+            alert("Parking ticket would be downloaded in a real implementation");
+            // In a real app, this would generate and download a PDF ticket
+        }
+
+        // Start a new booking
+        function newBooking() {
+            // Reset form
+            document.getElementById('from-location').value = '';
+            document.getElementById('to-location').value = '';
+            document.getElementById('vehicle-type').value = '';
+            document.getElementById('parking-time').value = '1';
+            
+            // Reset booking data
+            currentBooking = {
+                from: "",
+                to: "",
+                vehicle: "",
+                duration: 1,
+                selectedSlot: null,
+                paymentMethod: null,
+                bookingTime: null,
+                totalPrice: 0,
+                bookingId: ""
+            };
+            
+            // Reset payment method selection
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.payment-details').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Go back to step 1
+            nextStep(1);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

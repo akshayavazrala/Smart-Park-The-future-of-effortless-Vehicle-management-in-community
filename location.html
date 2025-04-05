@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Parking Location</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #004899;
+            --primary-light: #3a6fb0;
+            --secondary-color: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .location-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .location-title h2 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .location-title p {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .location-title i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .location-actions button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .location-actions button:hover {
+            background-color: var(--primary-light);
+        }
+
+        .map-container {
+            height: 500px;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #parking-map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .map-fallback {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .map-fallback img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .map-overlay h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .location-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .detail-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .detail-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-card ul {
+            list-style: none;
+        }
+
+        .detail-card li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .detail-card i {
+            color: var(--primary-color);
+            margin-top: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .location-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .map-container {
+                height: 400px;
+            }
+            
+            .map-overlay {
+                max-width: 200px;
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="logo.jpg" alt="SmartPark Logo">
+            <h1>SmartPark Hyderabad</h1>
+        </div>
+        <nav class="nav-links">
+            <a href="user_dashboard.html">Home</a>
+            <a href="location_pricing.html">Pricing</a>
+            <a href="parking.html">Book Now</a>
+            <a href="#" class="active">Locations</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <section class="location-container">
+            <div class="location-header">
+                <div class="location-title">
+                    <h2 id="location-name">Loading Location...</h2>
+                    <p id="location-address"><i class="fas fa-map-marker-alt"></i> Loading address...</p>
+                </div>
+                <div class="location-actions">
+                    <button onclick="bookParking()">
+                        <i class="fas fa-calendar-check"></i> Book This Parking
+                    </button>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <div id="parking-map"></div>
+                <div id="map-fallback" class="map-fallback" style="display: none;">
+                    <img src="https://maps.googleapis.com/maps/api/staticmap?center=17.3850,78.4867&zoom=12&size=600x400&maptype=roadmap&markers=color:blue%7C17.3850,78.4867&key=YOUR_GOOGLE_MAPS_API_KEY" alt="Map">
+                    <h3>Interactive Map Not Available</h3>
+                    <p>We're showing a static map instead. Here are the parking details:</p>
+                </div>
+                <div class="map-overlay">
+                    <h4 id="map-location-name">Parking Location</h4>
+                    <p id="map-location-details">Select a parking spot to view details</p>
+                </div>
+            </div>
+            
+            <div class="location-details">
+                <div class="detail-card">
+                    <h3><i class="fas fa-info-circle"></i> Parking Details</h3>
+                    <ul id="parking-details">
+                        <li><i class="fas fa-clock"></i> <span id="timings">Loading timings...</span></li>
+                        <li><i class="fas fa-car"></i> <span id="capacity">Loading capacity...</span></li>
+                        <li><i class="fas fa-indian-rupee-sign"></i> <span id="pricing">Loading pricing...</span></li>
+                        <li><i class="fas fa-shield-alt"></i> <span id="security">24/7 Security Monitoring</span></li>
+                    </ul>
+                </div>
+                
+                <div class="detail-card">
+                    <h3><i class="fas fa-location-dot"></i> Nearby Landmarks</h3>
+                    <ul id="nearby-landmarks">
+                        <li><i class="fas fa-building"></i> <span>Loading nearby landmarks...</span></li>
+                    </ul>
+                </div>
+                
+                <div class="detail-card">
+                    <h3><i class="fas fa-route"></i> Directions</h3>
+                    <ul>
+                        <li><i class="fas fa-subway"></i> <span id="metro-info">Nearest metro: Loading...</span></li>
+                        <li><i class="fas fa-bus"></i> <span id="bus-info">Bus routes: Loading...</span></li>
+                        <li><i class="fas fa-car-side"></i> <span>Parking entrance clearly marked</span></li>
+                        <li><i class="fas fa-wheelchair"></i> <span>Accessible parking available</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Google Maps API with fallback -->
+    <script>
+        // Sample parking locations data
+        const parkingLocations = {
+            'inorbit': {
+                name: 'Inorbit Mall Parking',
+                address: 'Mindspace, Madhapur, Hyderabad, Telangana 500081',
+                lat: 17.4418,
+                lng: 78.3789,
+                timings: '10:00 AM - 10:30 PM',
+                capacity: '1200 vehicles',
+                pricing: '₹40 first hour, ₹20 subsequent hours',
+                landmarks: [
+                    'Inorbit Mall (50m)',
+                    'Cyber Towers (800m)',
+                    'Durgam Cheruvu Bridge (1.2km)'
+                ],
+                metro: 'Raidurg Metro Station (1.5km)',
+                bus: '1K, 216, 217 (Mindspace stop)'
+            },
+            'hitech': {
+                name: 'HITEC City Parking',
+                address: 'Near Cyber Towers, Madhapur, Hyderabad',
+                lat: 17.4474,
+                lng: 78.3765,
+                timings: '24/7',
+                capacity: '800 vehicles',
+                pricing: '₹50 first hour, ₹25 subsequent hours',
+                landmarks: [
+                    'Cyber Towers (200m)',
+                    'Shilparamam (1km)',
+                    'Kothaguda Junction (1.5km)'
+                ],
+                metro: 'HITEC City Metro Station (800m)',
+                bus: '1K, 216, 217 (Cyber Towers stop)'
+            },
+            'charminar': {
+                name: 'Charminar Parking',
+                address: 'Near Laad Bazaar, Old City, Hyderabad',
+                lat: 17.3616,
+                lng: 78.4747,
+                timings: '8:00 AM - 10:00 PM',
+                capacity: '500 vehicles',
+                pricing: '₹60 first hour, ₹30 subsequent hours',
+                landmarks: [
+                    'Charminar (100m)',
+                    'Mecca Masjid (200m)',
+                    'Laad Bazaar (50m)'
+                ],
+                metro: 'Charminar Metro Station (500m)',
+                bus: '5D, 65, 66 (Charminar stop)'
+            }
+        };
+        
+        // Initialize the page
+        function initPage() {
+            // Get location from URL parameter or default to 'inorbit'
+            const urlParams = new URLSearchParams(window.location.search);
+            const locationId = urlParams.get('location') || 'inorbit';
+            
+            // Set the selected location data
+            const selectedLocation = parkingLocations[locationId] || parkingLocations['inorbit'];
+            
+            // Update page content
+            updateLocationInfo(selectedLocation);
+            
+            // Try to load Google Maps
+            loadGoogleMaps(selectedLocation);
+        }
+        
+        // Load Google Maps with fallback
+        function loadGoogleMaps(selectedLocation) {
+            // Create script element
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDummyKeyReplaceWithYourOwn&callback=initMap&libraries=places`;
+            script.async = true;
+            script.defer = true;
+            
+            // Add error handler
+            script.onerror = function() {
+                showMapFallback(selectedLocation);
+            };
+            
+            // Define initMap function before loading script
+            window.initMap = function() {
+                try {
+                    // Create map centered at selected location
+                    const map = new google.maps.Map(document.getElementById('parking-map'), {
+                        center: { lat: selectedLocation.lat, lng: selectedLocation.lng },
+                        zoom: 16,
+                        mapTypeControl: false,
+                        streetViewControl: false,
+                        fullscreenControl: false
+                    });
+                    
+                    // Add marker for parking location
+                    const marker = new google.maps.Marker({
+                        position: { lat: selectedLocation.lat, lng: selectedLocation.lng },
+                        map: map,
+                        title: selectedLocation.name,
+                        icon: {
+                            url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                        }
+                    });
+                    
+                    // Add info window
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<strong>${selectedLocation.name}</strong><br>${selectedLocation.address}`
+                    });
+                    
+                    marker.addListener('click', () => {
+                        infoWindow.open(map, marker);
+                    });
+                    infoWindow.open(map, marker);
+                    
+                } catch (error) {
+                    console.error('Google Maps error:', error);
+                    showMapFallback(selectedLocation);
+                }
+            };
+            
+            // Add script to head
+            document.head.appendChild(script);
+            
+            // Set timeout in case API doesn't load
+            setTimeout(function() {
+                if (!window.google || !window.google.maps) {
+                    showMapFallback(selectedLocation);
+                }
+            }, 5000);
+        }
+        
+        // Show fallback static map
+        function showMapFallback(selectedLocation) {
+            document.getElementById('parking-map').style.display = 'none';
+            const fallback = document.getElementById('map-fallback');
+            fallback.style.display = 'block';
+            
+            // Update fallback map image
+            const fallbackImg = fallback.querySelector('img');
+            fallbackImg.src = `https://maps.googleapis.com/maps/api/staticmap?center=${selectedLocation.lat},${selectedLocation.lng}&zoom=16&size=600x400&maptype=roadmap&markers=color:blue%7C${selectedLocation.lat},${selectedLocation.lng}&key=YOUR_GOOGLE_MAPS_API_KEY`;
+        }
+        
+        // Update location information on page
+        function updateLocationInfo(selectedLocation) {
+            document.getElementById('location-name').textContent = selectedLocation.name;
+            document.getElementById('location-address').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${selectedLocation.address}`;
+            document.getElementById('map-location-name').textContent = selectedLocation.name;
+            document.getElementById('map-location-details').textContent = selectedLocation.address;
+            document.getElementById('timings').textContent = selectedLocation.timings;
+            document.getElementById('capacity').textContent = selectedLocation.capacity;
+            document.getElementById('pricing').textContent = selectedLocation.pricing;
+            document.getElementById('metro-info').textContent = `Nearest metro: ${selectedLocation.metro}`;
+            document.getElementById('bus-info').textContent = `Bus routes: ${selectedLocation.bus}`;
+            
+            // Update landmarks list
+            const landmarksList = document.getElementById('nearby-landmarks');
+            landmarksList.innerHTML = '';
+            selectedLocation.landmarks.forEach(landmark => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-map-pin"></i> ${landmark}`;
+                landmarksList.appendChild(li);
+            });
+        }
+        
+        // Book parking function
+        function bookParking() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const locationId = urlParams.get('location') || 'inorbit';
+            localStorage.setItem('selectedLocation', locationId);
+            window.location.href = 'parking.html';
+        }
+        
+        // Initialize when page loads
+        window.onload = initPage;
+    </script>
+</body>
+</html>

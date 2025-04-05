@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration | SmartPark</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-gray: #e2e8f0;
+            --medium-gray: #94a3b8;
+            --dark-gray: #64748b;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header img {
+            height: 40px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .registration-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-header p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--light-gray);
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            color: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            border: 2px solid var(--light-gray);
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: var(--medium-gray);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .progress-step.active .step-number {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .progress-step.completed .step-number {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        label.required::after {
+            content: ' *';
+            color: var(--error-color);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.875rem;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .radio-option input {
+            width: auto;
+        }
+
+        .file-upload {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border: 2px dashed var(--light-gray);
+            border-radius: var(--border-radius);
+            background-color: var(--secondary-color);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-upload-label i {
+            font-size: 1.5rem;
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-label span {
+            font-size: 0.875rem;
+            color: var(--medium-gray);
+        }
+
+        .file-upload-label strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .file-preview {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: var(--secondary-color);
+            border-radius: var(--border-radius);
+            font-size: 0.75rem;
+        }
+
+        .file-preview i {
+            margin-right: 0.5rem;
+            color: var(--success-color);
+        }
+
+        .file-preview .file-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-preview .file-size {
+            color: var(--medium-gray);
+            margin-left: 0.5rem;
+        }
+
+        .file-preview .remove-file {
+            color: var(--error-color);
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .captcha-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+            background-color: #f0f0f0;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            user-select: none;
+        }
+
+        .refresh-captcha {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .refresh-captcha:hover {
+            color: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-disabled {
+            background-color: var(--light-gray);
+            color: var(--medium-gray);
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: var(--error-color);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .terms-checkbox input {
+            width: auto;
+            margin-top: 0.25rem;
+        }
+
+        .terms-text {
+            font-size: 0.75rem;
+            color: var(--dark-gray);
+        }
+
+        .terms-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .progress-steps {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .progress-step {
+                flex: 1;
+                min-width: 60px;
+            }
+            
+            .progress-steps::before {
+                top: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .form-actions {
+                flex-direction: column-reverse;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <img src="logo.jpg" alt="SmartPark Logo">
+            <h1>SmartPark</h1>
+        </div>
+        <div class="header-right">
+            <div class="user-profile">
+                <div class="user-avatar">JS</div>
+                <span>John Smith</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="registration-card">
+            <div class="card-header">
+                <h2>Vehicle Registration</h2>
+                <p>Register your vehicle to access SmartPark services</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="progress-steps">
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Vehicle Details</div>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Documents</div>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Review & Submit</div>
+                    </div>
+                </div>
+                
+                <form id="vehicleForm">
+                    <!-- Step 1: Vehicle Information -->
+                    <div class="form-section active" data-section="1">
+                        <h3 class="section-title"><i class="fas fa-car"></i> Vehicle Information</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="vehicleType" class="required">Vehicle Type</label>
+                                <select id="vehicleType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="car">Car</option>
+                                    <option value="suv">SUV</option>
+                                    <option value="truck">Truck</option>
+                                    <option value="motorcycle">Motorcycle</option>
+                                </select>
+                                <div class="error-message">Please select a vehicle type</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="manufacturer" class="required">Manufacturer (Make)</label>
+                                <input type="text" id="manufacturer" required>
+                                <div class="error-message">Please enter the manufacturer</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="model" class="required">Model</label>
+                                <input type="text" id="model" required>
+                                <div class="error-message">Please enter the model</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="year" class="required">Year</label>
+                                <input type="number" id="year" min="1900" max="2099" required>
+                                <div class="error-message">Please enter a valid year</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="color" class="required">Color</label>
+                                <input type="text" id="color" required>
+                                <div class="error-message">Please enter the color</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="seatingCapacity" class="required">Seating Capacity</label>
+                                <input type="number" id="seatingCapacity" min="1" required>
+                                <div class="error-message">Please enter seating capacity</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="engineNumber" class="required">Engine Number</label>
+                                <input type="text" id="engineNumber" required>
+                                <div class="error-message">Please enter engine number</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="chassisNumber" class="required">Chassis Number</label>
+                                <input type="text" id="chassisNumber" required>
+                                <div class="error-message">Please enter chassis number</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="fuelType" class="required">Fuel Type</label>
+                                <select id="fuelType" required>
+                                    <option value="">Select Fuel Type</option>
+                                    <option value="petrol">Petrol</option>
+                                    <option value="diesel">Diesel</option>
+                                    <option value="electric">Electric</option>
+                                    <option value="hybrid">Hybrid</option>
+                                </select>
+                                <div class="error-message">Please select fuel type</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="purchaseDate" class="required">Purchase Date</label>
+                                <input type="date" id="purchaseDate" required>
+                                <div class="error-message">Please select purchase date</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="specialNumber">Special Number (if any)</label>
+                                <input type="text" id="specialNumber">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-disabled" disabled>
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button type="button" class="btn btn-primary next-step" data-next="2">
+                                Next <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Documents -->
+                    <div class="form-section" data-section="2">
+                        <h3 class="section-title"><i class="fas fa-file-alt"></i> Required Documents</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <p style="margin-bottom: 1rem; color: var(--dark-gray); font-size: 0.875rem;">
+                                    Please upload clear scans or photos of the following documents (PDF, JPG, or PNG, max 5MB each)
+                                </p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">Aadhar Card Copy</label>
+                                <div class="file-upload">
+                                    <input type="file" id="aadharDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <label for="aadharDoc" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or <strong>drag & drop</strong></span>
+                                    </label>
+                                    <div id="aadharPreview" class="file-preview" style="display: none;">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span class="file-name"></span>
+                                        <span class="file-size"></span>
+                                        <span class="remove-file"><i class="fas fa-times"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">Insurance Document</label>
+                                <div class="file-upload">
+                                    <input type="file" id="insuranceDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <label for="insuranceDoc" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or <strong>drag & drop</strong></span>
+                                    </label>
+                                    <div id="insurancePreview" class="file-preview" style="display: none;">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span class="file-name"></span>
+                                        <span class="file-size"></span>
+                                        <span class="remove-file"><i class="fas fa-times"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">Purchase Invoice</label>
+                                <div class="file-upload">
+                                    <input type="file" id="purchaseDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <label for="purchaseDoc" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or <strong>drag & drop</strong></span>
+                                    </label>
+                                    <div id="purchasePreview" class="file-preview" style="display: none;">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span class="file-name"></span>
+                                        <span class="file-size"></span>
+                                        <span class="remove-file"><i class="fas fa-times"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">License Copy</label>
+                                <div class="file-upload">
+                                    <input type="file" id="licenseDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <label for="licenseDoc" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or <strong>drag & drop</strong></span>
+                                    </label>
+                                    <div id="licensePreview" class="file-preview" style="display: none;">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span class="file-name"></span>
+                                        <span class="file-size"></span>
+                                        <span class="remove-file"><i class="fas fa-times"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="1">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button type="button" class="btn btn-primary next-step" data-next="3">
+                                Next <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Review & Submit -->
+                    <div class="form-section" data-section="3">
+                        <h3 class="section-title"><i class="fas fa-check-circle"></i> Review & Submit</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <h4 style="margin-bottom: 1rem; color: var(--primary-color);">Vehicle Information</h4>
+                                <div id="reviewVehicleInfo" style="background-color: var(--secondary-color); padding: 1rem; border-radius: var(--border-radius);">
+                                    <!-- Vehicle info will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4 style="margin-bottom: 1rem; color: var(--primary-color);">Uploaded Documents</h4>
+                                <div id="reviewDocuments" style="background-color: var(--secondary-color); padding: 1rem; border-radius: var(--border-radius);">
+                                    <!-- Document info will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="captchaInput" class="required">CAPTCHA Verification</label>
+                                <div class="captcha-container">
+                                    <div class="captcha-display" id="captchaText"></div>
+                                    <button type="button" class="refresh-captcha" onclick="generateCaptcha()">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                    <input type="text" id="captchaInput" placeholder="Enter CAPTCHA" required style="flex: 1;">
+                                </div>
+                                <div class="error-message">Please enter the correct CAPTCHA</div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <div class="terms-checkbox">
+                                    <input type="checkbox" id="agreeTerms" required>
+                                    <label for="agreeTerms" class="terms-text">
+                                        I certify that all information provided is accurate and complete. I agree to the 
+                                        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                                    </label>
+                                </div>
+                                <div class="error-message">You must agree to the terms</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="2">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button type="button" class="btn btn-primary" id="submitBtn">
+                                <span id="submitText">Submit Registration</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            if (!userData || !userData.id) {
+                alert('Please login first to register a vehicle');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Set today's date as max for purchase date
+            document.getElementById('purchaseDate').max = new Date().toISOString().split('T')[0];
+            
+            // Initialize CAPTCHA
+            generateCaptcha();
+            
+            // Setup file upload previews
+            setupFileUpload('aadharDoc', 'aadharPreview');
+            setupFileUpload('insuranceDoc', 'insurancePreview');
+            setupFileUpload('purchaseDoc', 'purchasePreview');
+            setupFileUpload('licenseDoc', 'licensePreview');
+            
+            // Step navigation
+            document.querySelectorAll('.next-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const nextStep = this.getAttribute('data-next');
+                    if (validateStep(parseInt(nextStep) - 1)) {
+                        navigateToStep(nextStep);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.prev-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const prevStep = this.getAttribute('data-prev');
+                    navigateToStep(prevStep);
+                });
+            });
+            
+            // Form submission
+            document.getElementById('submitBtn').addEventListener('click', submitForm);
+        });
+        
+        function setupFileUpload(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            
+            input.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    const fileName = file.name;
+                    const fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                    
+                    // Update preview
+                    preview.querySelector('.file-name').textContent = fileName;
+                    preview.querySelector('.file-size').textContent = fileSize;
+                    preview.style.display = 'flex';
+                    
+                    // Clear error if any
+                    this.parentElement.parentElement.classList.remove('error');
+                }
+            });
+            
+            // Remove file
+            preview.querySelector('.remove-file').addEventListener('click', function(e) {
+                e.stopPropagation();
+                input.value = '';
+                preview.style.display = 'none';
+            });
+        }
+        
+        function generateCaptcha() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+            let captcha = "";
+            for (let i = 0; i < 6; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById("captchaText").textContent = captcha;
+            document.getElementById("captchaInput").value = "";
+        }
+        
+        function validateStep(step) {
+            let isValid = true;
+            
+            if (step === 1) {
+                // Validate vehicle information
+                const requiredFields = [
+                    'vehicleType', 'manufacturer', 'model', 'year', 
+                    'color', 'seatingCapacity', 'engineNumber', 
+                    'chassisNumber', 'fuelType', 'purchaseDate'
+                ];
+                
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    const formGroup = field.closest('.form-group');
+                    
+                    if (!field.value) {
+                        formGroup.classList.add('error');
+                        isValid = false;
+                    } else {
+                        formGroup.classList.remove('error');
+                        
+                        // Additional validation for specific fields
+                        if (fieldId === 'year') {
+                            const year = parseInt(field.value);
+                            if (isNaN(year) || year < 1900 || year > new Date().getFullYear() + 1) {
+                                formGroup.classList.add('error');
+                                formGroup.querySelector('.error-message').textContent = 'Please enter a valid year';
+                                isValid = false;
+                            }
+                        }
+                    }
+                });
+            } else if (step === 2) {
+                // Validate documents
+                const requiredFiles = ['aadharDoc', 'insuranceDoc', 'purchaseDoc', 'licenseDoc'];
+                
+                requiredFiles.forEach(fileId => {
+                    const fileInput = document.getElementById(fileId);
+                    const formGroup = fileInput.closest('.form-group');
+                    
+                    if (!fileInput.files || !fileInput.files[0]) {
+                        formGroup.classList.add('error');
+                        isValid = false;
+                    } else {
+                        // Check file size (max 5MB)
+                        const file = fileInput.files[0];
+                        if (file.size > 5 * 1024 * 1024) {
+                            formGroup.classList.add('error');
+                            formGroup.querySelector('.error-message').textContent = 'File size exceeds 5MB limit';
+                            isValid = false;
+                        } else {
+                            formGroup.classList.remove('error');
+                        }
+                    }
+                });
+            }
+            
+            if (!isValid) {
+                // Scroll to first error
+                const firstError = document.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            return isValid;
+        }
+        
+        function navigateToStep(step) {
+            // Update progress steps
+            document.querySelectorAll('.progress-step').forEach(stepElement => {
+                const stepNumber = parseInt(stepElement.getAttribute('data-step'));
+                if (stepNumber < step) {
+                    stepElement.classList.add('completed');
+                    stepElement.classList.remove('active');
+                } else if (stepNumber == step) {
+                    stepElement.classList.add('active');
+                    stepElement.classList.remove('completed');
+                } else {
+                    stepElement.classList.remove('active', 'completed');
+                }
+            });
+            
+            // Show/hide sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                if (section.getAttribute('data-section') === step) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+            
+            // If going to review step, populate review information
+            if (step === '3') {
+                populateReviewInfo();
+            }
+        }
+        
+        function populateReviewInfo() {
+            // Vehicle information
+            const vehicleInfo = document.getElementById('reviewVehicleInfo');
+            vehicleInfo.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <div><strong>Type:</strong> ${document.getElementById('vehicleType').options[document.getElementById('vehicleType').selectedIndex].text}</div>
+                    <div><strong>Make:</strong> ${document.getElementById('manufacturer').value}</div>
+                    <div><strong>Model:</strong> ${document.getElementById('model').value}</div>
+                    <div><strong>Year:</strong> ${document.getElementById('year').value}</div>
+                    <div><strong>Color:</strong> ${document.getElementById('color').value}</div>
+                    <div><strong>Seats:</strong> ${document.getElementById('seatingCapacity').value}</div>
+                    <div><strong>Engine No:</strong> ${document.getElementById('engineNumber').value}</div>
+                    <div><strong>Chassis No:</strong> ${document.getElementById('chassisNumber').value}</div>
+                    <div><strong>Fuel Type:</strong> ${document.getElementById('fuelType').options[document.getElementById('fuelType').selectedIndex].text}</div>
+                    <div><strong>Purchase Date:</strong> ${document.getElementById('purchaseDate').value}</div>
+                    ${document.getElementById('specialNumber').value ? `<div><strong>Special No:</strong> ${document.getElementById('specialNumber').value}</div>` : ''}
+                </div>
+            `;
+            
+            // Documents
+            const documentsInfo = document.getElementById('reviewDocuments');
+            documentsInfo.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr; gap: 0.5rem;">
+                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('aadharDoc').files[0]?.name || 'No file'}</div>
+                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('insuranceDoc').files[0]?.name || 'No file'}</div>
+                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('purchaseDoc').files[0]?.name || 'No file'}</div>
+                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('licenseDoc').files[0]?.name || 'No file'}</div>
+                </div>
+            `;
+        }
+        
+        function showLoading(show) {
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            
+            if (show) {
+                submitBtn.disabled = true;
+                submitText.innerHTML = '<div class="loading"></div> Processing...';
+            } else {
+                submitBtn.disabled = false;
+                submitText.textContent = 'Submit Registration';
+            }
+        }
+        
+        async function submitForm() {
+            // Validate final step
+            if (!validateStep(3)) {
+                return;
+            }
+            
+            // Check CAPTCHA
+            const enteredCaptcha = document.getElementById("captchaInput").value;
+            const generatedCaptcha = document.getElementById("captchaText").textContent;
+            
+            if (enteredCaptcha !== generatedCaptcha) {
+                document.getElementById("captchaInput").closest('.form-group').classList.add('error');
+                document.getElementById("captchaInput").closest('.form-group').querySelector('.error-message').textContent = 'CAPTCHA does not match';
+                generateCaptcha();
+                return;
+            }
+            
+            // Check terms agreement
+            if (!document.getElementById('agreeTerms').checked) {
+                document.getElementById('agreeTerms').closest('.form-group').classList.add('error');
+                return;
+            }
+            
+            // Get user data from localStorage
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            if (!userData || !userData.id) {
+                alert('Session expired. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Create FormData object
+            const formData = new FormData();
+            
+            // Add all form fields
+            formData.append('userId', userData.id);
+            formData.append('vehicleType', document.getElementById('vehicleType').value);
+            formData.append('manufacturer', document.getElementById('manufacturer').value);
+            formData.append('model', document.getElementById('model').value);
+            formData.append('year', document.getElementById('year').value);
+            formData.append('seatingCapacity', document.getElementById('seatingCapacity').value);
+            formData.append('color', document.getElementById('color').value);
+            formData.append('engineNumber', document.getElementById('engineNumber').value);
+            formData.append('chassisNumber', document.getElementById('chassisNumber').value);
+            formData.append('fuelType', document.getElementById('fuelType').value);
+            formData.append('purchaseDate', document.getElementById('purchaseDate').value);
+            
+            // Add special number if provided
+            const specialNumber = document.getElementById('specialNumber').value;
+            if (specialNumber) {
+                formData.append('specialNumber', specialNumber);
+            }
+            
+            // Add files
+            formData.append('aadharDoc', document.getElementById('aadharDoc').files[0]);
+            formData.append('insuranceDoc', document.getElementById('insuranceDoc').files[0]);
+            formData.append('purchaseDoc', document.getElementById('purchaseDoc').files[0]);
+            formData.append('licenseDoc', document.getElementById('licenseDoc').files[0]);
+            
+            // Show loading state
+            showLoading(true);
+            
+            try {
+                const response = await fetch('http://localhost:5000/register-vehicle', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert("Vehicle registration successful!");
+                    window.location.href = 'dashboard.html'; // Redirect to dashboard
+                } else {
+                    alert("Registration failed: " + (data.message || 'Unknown error'));
+                    generateCaptcha();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert("An error occurred during registration. Please try again.");
+            } finally {
+                showLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Hyderabad Parking Pricing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #004899;
+            --primary-light: #3a6fb0;
+            --secondary-color: #f8f9fa;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .location-pricing {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .location-pricing h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .pricing-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .pricing-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .pricing-tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .pricing-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .pricing-content.active {
+            display: block;
+        }
+
+        .location-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-image {
+            width: 200px;
+            height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .location-details {
+            flex: 1;
+        }
+
+        .location-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .location-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .feature-badge {
+            background-color: #f0f6ff;
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .pricing-table th, .pricing-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pricing-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .pricing-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .price-highlight {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .peak-badge {
+            background-color: var(--warning-color);
+            color: #333;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .discount-badge {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .pricing-notes {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .pricing-notes h4 {
+            margin-bottom: 0.75rem;
+            color: var(--primary-color);
+        }
+
+        .pricing-notes ul {
+            padding-left: 1.25rem;
+        }
+
+        .pricing-notes li {
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .booking-actions button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .booking-actions button:hover {
+            background-color: var(--primary-light);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .location-header {
+                flex-direction: column;
+            }
+            
+            .location-image {
+                width: 100%;
+                height: auto;
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .pricing-tabs {
+                overflow-x: scroll;
+                padding-bottom: 0.5rem;
+            }
+            
+            .pricing-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="logo.jpg" alt="SmartPark Logo">
+            <h1>SmartPark Hyderabad</h1>
+        </div>
+        <nav class="nav-links">
+            <a href="user_dashboard.html">Home</a>
+            <a href="location_pricing.html" class="active">Pricing</a>
+            <a href="parking.html">Book Now</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <section class="location-pricing">
+            <h2>Hyderabad Parking Locations & Pricing</h2>
+            <p style="text-align: center; margin-bottom: 1.5rem;">Transparent pricing for premium parking across Hyderabad</p>
+            
+            <div class="pricing-tabs">
+                <div class="pricing-tab active" onclick="showPricing('inorbit')">Inorbit Mall</div>
+                <div class="pricing-tab" onclick="showPricing('hitech')">HITEC City</div>
+                <div class="pricing-tab" onclick="showPricing('charminar')">Charminar</div>
+                <div class="pricing-tab" onclick="showPricing('tankbund')">Tank Bund</div>
+                <div class="pricing-tab" onclick="showPricing('airport')">RGIA Airport</div>
+            </div>
+            
+            <!-- Inorbit Mall Pricing -->
+            <div class="pricing-content active" id="inorbit-pricing">
+                <div class="location-header">
+                    <img src="https://via.placeholder.com/400x300.png?text=Inorbit+Mall+Hyderabad" alt="Inorbit Mall Hyderabad" class="location-image">
+                    <div class="location-details">
+                        <h3>Inorbit Mall Parking</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Mindspace, Madhapur, Hyderabad</p>
+                        
+                        <div class="location-features">
+                            <span class="feature-badge"><i class="fas fa-shield-alt"></i> 24/7 Security</span>
+                            <span class="feature-badge"><i class="fas fa-car"></i> 1200 Spaces</span>
+                            <span class="feature-badge"><i class="fas fa-bolt"></i> EV Charging</span>
+                            <span class="feature-badge"><i class="fas fa-wheelchair"></i> Accessible</span>
+                        </div>
+                        
+                        <p>One of Hyderabad's most popular malls with ample parking space and direct access to all shopping and dining options.</p>
+                    </div>
+                </div>
+                
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Vehicle Type</th>
+                            <th>First Hour</th>
+                            <th>Subsequent Hours</th>
+                            <th>Daily Max</th>
+                            <th>Special Rates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Motorcycle/Scooter</td>
+                            <td><span class="price-highlight">₹20</span></td>
+                            <td>₹10/hour</td>
+                            <td>₹80</td>
+                            <td>₹50 weekly <span class="discount-badge">20% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Car/SUV</td>
+                            <td><span class="price-highlight">₹40</span> <span class="peak-badge">₹60 weekends</span></td>
+                            <td>₹20/hour</td>
+                            <td>₹200</td>
+                            <td>₹150 weekly <span class="discount-badge">25% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Truck/Heavy Vehicle</td>
+                            <td><span class="price-highlight">₹80</span></td>
+                            <td>₹40/hour</td>
+                            <td>₹400</td>
+                            <td>₹300 weekly <span class="discount-badge">25% off</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pricing-notes">
+                    <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                    <ul>
+                        <li><strong>Peak hours:</strong> 6-10pm on weekends (higher rates apply)</li>
+                        <li><strong>Mall validation:</strong> Get 2 hours free with ₹3000+ purchase</li>
+                        <li><strong>EV charging:</strong> Additional ₹50 per charging session</li>
+                        <li><strong>Operating hours:</strong> 10:00 AM - 10:30 PM daily</li>
+                        <li><strong>Special:</strong> Free parking for movie ticket holders (validated at theater)</li>
+                    </ul>
+                </div>
+                
+                <div class="booking-actions">
+                    <button onclick="bookParking('inorbit')">
+                        <i class="fas fa-calendar-check"></i> Book Inorbit Parking
+                    </button>
+                </div>
+            </div>
+            
+            <!-- HITEC City Pricing -->
+            <div class="pricing-content" id="hitech-pricing">
+                <div class="location-header">
+                    <img src="https://via.placeholder.com/400x300.png?text=HITEC+City+Hyderabad" alt="HITEC City Hyderabad" class="location-image">
+                    <div class="location-details">
+                        <h3>HITEC City Parking</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Near Cyber Towers, Madhapur</p>
+                        
+                        <div class="location-features">
+                            <span class="feature-badge"><i class="fas fa-building"></i> IT Hub</span>
+                            <span class="feature-badge"><i class="fas fa-car"></i> 800 Spaces</span>
+                            <span class="fas fa-wifi"></i> Free WiFi</span>
+                            <span class="feature-badge"><i class="fas fa-clock"></i> 24/7 Access</span>
+                        </div>
+                        
+                        <p>Premium parking for Hyderabad's IT hub with easy access to major tech parks and corporate offices.</p>
+                    </div>
+                </div>
+                
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Vehicle Type</th>
+                            <th>First Hour</th>
+                            <th>Subsequent Hours</th>
+                            <th>Daily Max</th>
+                            <th>Special Rates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Motorcycle/Scooter</td>
+                            <td><span class="price-highlight">₹25</span></td>
+                            <td>₹12/hour</td>
+                            <td>₹100</td>
+                            <td>₹70 weekly <span class="discount-badge">15% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Car/SUV</td>
+                            <td><span class="price-highlight">₹50</span> <span class="peak-badge">₹70 peak</span></td>
+                            <td>₹25/hour</td>
+                            <td>₹250</td>
+                            <td>₹175 weekly <span class="discount-badge">20% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Truck/Heavy Vehicle</td>
+                            <td><span class="price-highlight">₹90</span></td>
+                            <td>₹45/hour</td>
+                            <td>₹450</td>
+                            <td>₹315 weekly <span class="discount-badge">30% off</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pricing-notes">
+                    <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                    <ul>
+                        <li><strong>Business hours special:</strong> Flat ₹150 for 8am-6pm parking</li>
+                        <li><strong>Corporate accounts:</strong> Special rates for registered companies</li>
+                        <li><strong>Conference rates:</strong> Discounted parking for event attendees</li>
+                        <li><strong>Operating hours:</strong> 24/7 with security patrol</li>
+                        <li><strong>Monthly passes:</strong> Starting at ₹2000 for IT employees</li>
+                    </ul>
+                </div>
+                
+                <div class="booking-actions">
+                    <button onclick="bookParking('hitech')">
+                        <i class="fas fa-calendar-check"></i> Book HITEC City Parking
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Charminar Pricing -->
+            <div class="pricing-content" id="charminar-pricing">
+                <div class="location-header">
+                    <img src="https://via.placeholder.com/400x300.png?text=Charminar+Hyderabad" alt="Charminar Hyderabad" class="location-image">
+                    <div class="location-details">
+                        <h3>Charminar Parking</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Near Laad Bazaar, Old City</p>
+                        
+                        <div class="location-features">
+                            <span class="feature-badge"><i class="fas fa-monument"></i> Heritage Area</span>
+                            <span class="feature-badge"><i class="fas fa-car"></i> 500 Spaces</span>
+                            <span class="feature-badge"><i class="fas fa-umbrella"></i> Covered</span>
+                            <span class="feature-badge"><i class="fas fa-shopping-bag"></i> Bazaar Access</span>
+                        </div>
+                        
+                        <p>Secure parking near Hyderabad's iconic Charminar monument with easy access to Laad Bazaar and historic sites.</p>
+                    </div>
+                </div>
+                
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Vehicle Type</th>
+                            <th>First Hour</th>
+                            <th>Subsequent Hours</th>
+                            <th>Daily Max</th>
+                            <th>Special Rates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Motorcycle/Scooter</td>
+                            <td><span class="price-highlight">₹30</span></td>
+                            <td>₹15/hour</td>
+                            <td>₹120</td>
+                            <td>₹80 weekly <span class="discount-badge">15% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Car/SUV</td>
+                            <td><span class="price-highlight">₹60</span> <span class="peak-badge">₹80 weekends</span></td>
+                            <td>₹30/hour</td>
+                            <td>₹300</td>
+                            <td>₹200 weekly <span class="discount-badge">20% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Truck/Heavy Vehicle</td>
+                            <td><span class="price-highlight">₹100</span></td>
+                            <td>₹50/hour</td>
+                            <td>₹500</td>
+                            <td>₹350 weekly <span class="discount-badge">30% off</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pricing-notes">
+                    <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                    <ul>
+                        <li><strong>Tourist special:</strong> Show sightseeing ticket for 10% discount</li>
+                        <li><strong>Friday rates:</strong> Higher pricing during Jumma prayers</li>
+                        <li><strong>Bazaar access:</strong> Direct pathway to Laad Bazaar</li>
+                        <li><strong>Operating hours:</strong> 8:00 AM - 10:00 PM daily</li>
+                        <li><strong>Guided tours:</strong> Available from parking area</li>
+                    </ul>
+                </div>
+                
+                <div class="booking-actions">
+                    <button onclick="bookParking('charminar')">
+                        <i class="fas fa-calendar-check"></i> Book Charminar Parking
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tank Bund Pricing -->
+            <div class="pricing-content" id="tankbund-pricing">
+                <div class="location-header">
+                    <img src="https://via.placeholder.com/400x300.png?text=Tank+Bund+Hyderabad" alt="Tank Bund Hyderabad" class="location-image">
+                    <div class="location-details">
+                        <h3>Tank Bund Parking</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Hussain Sagar Lake, NTR Marg</p>
+                        
+                        <div class="location-features">
+                            <span class="feature-badge"><i class="fas fa-lake"></i> Lake View</span>
+                            <span class="feature-badge"><i class="fas fa-car"></i> 600 Spaces</span>
+                            <span class="feature-badge"><i class="fas fa-camera"></i> Photo Spots</span>
+                            <span class="feature-badge"><i class="fas fa-utensils"></i> Food Court</span>
+                        </div>
+                        
+                        <p>Scenic parking along Hyderabad's famous Tank Bund with views of Hussain Sagar Lake and Buddha statue.</p>
+                    </div>
+                </div>
+                
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Vehicle Type</th>
+                            <th>First Hour</th>
+                            <th>Subsequent Hours</th>
+                            <th>Daily Max</th>
+                            <th>Special Rates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Motorcycle/Scooter</td>
+                            <td><span class="price-highlight">₹20</span></td>
+                            <td>₹10/hour</td>
+                            <td>₹80</td>
+                            <td>₹50 weekly <span class="discount-badge">20% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Car/SUV</td>
+                            <td><span class="price-highlight">₹40</span> <span class="peak-badge">₹60 evenings</span></td>
+                            <td>₹20/hour</td>
+                            <td>₹200</td>
+                            <td>₹150 weekly <span class="discount-badge">25% off</span></td>
+                        </tr>
+                        <tr>
+                            <td>Truck/Heavy Vehicle</td>
+                            <td><span class="price-highlight">₹80</span></td>
+                            <td>₹40/hour</td>
+                            <td>₹400</td>
+                            <td>₹300 weekly <span class="discount-badge">25% off</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pricing-notes">
+                    <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                    <ul>
+                        <li><strong>Evening premium:</strong> 5-9pm rates higher due to light shows</li>
+                        <li><strong>Boat ride combo:</strong> Parking + boat ride packages available</li>
+                        <li><strong>Event days:</strong> Special pricing during festivals and events</li>
+                        <li><strong>Operating hours:</strong> 6:00 AM - 11:00 PM daily</li>
+                        <li><strong>Lumbini Park:</strong> Discounted entry with parking receipt</li>
+                    </ul>
+                </div>
+                
+                <div class="booking-actions">
+                    <button onclick="bookParking('tankbund')">
+                        <i class="fas fa-calendar-check"></i> Book Tank Bund Parking
+                    </button>
+                </div>
+            </div>
+            
+            <!-- RGIA Airport Pricing -->
+            <div class="pricing-content" id="airport-pricing">
+                <div class="location-header">
+                    <img src="https://via.placeholder.com/400x300.png?text=RGIA+Airport+Hyderabad" alt="RGIA Airport Hyderabad" class="location-image">
+                    <div class="location-details">
+                        <h3>RGIA Airport Parking</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Shamshabad, Hyderabad</p>
+                        
+                        <div class="location-features">
+                            <span class="feature-badge"><i class="fas fa-shuttle-van"></i> Terminal Shuttle</span>
+                            <span class="feature-badge"><i class="fas fa-car"></i> 1500 Spaces</span>
+                            <span class="feature-badge"><i class="fas fa-suitcase"></i> Luggage Help</span>
+                            <span class="feature-badge"><i class="fas fa-clock"></i> 24/7 Operation</span>
+                        </div>
+                        
+                        <p>Convenient parking at Rajiv Gandhi International Airport with frequent shuttle service to terminals.</p>
+                    </div>
+                </div>
+                
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Parking Option</th>
+                            <th>0-1 Hour</th>
+                            <th>1-3 Hours</th>
+                            <th>3-6 Hours</th>
+                            <th>Daily Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Short-Term (Terminal)</td>
+                            <td><span class="price-highlight">₹50</span></td>
+                            <td>₹100</td>
+                            <td>₹150</td>
+                            <td>₹300</td>
+                        </tr>
+                        <tr>
+                            <td>Long-Term (Covered)</td>
+                            <td><span class="price-highlight">₹40</span></td>
+                            <td>₹80</td>
+                            <td>₹120</td>
+                            <td>₹250</td>
+                        </tr>
+                        <tr>
+                            <td>Long-Term (Economy)</td>
+                            <td><span class="price-highlight">₹30</span></td>
+                            <td>₹60</td>
+                            <td>₹90</td>
+                            <td>₹180</td>
+                        </tr>
+                        <tr>
+                            <td>Valet Parking</td>
+                            <td><span class="price-highlight">₹80</span></td>
+                            <td>₹150</td>
+                            <td>₹200</td>
+                            <td>₹400</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pricing-notes">
+                    <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                    <ul>
+                        <li><strong>Shuttle service:</strong> Runs every 10 minutes to all terminals</li>
+                        <li><strong>Premium service:</strong> Includes car wash for ₹150 extra</li>
+                        <li><strong>Reserved parking:</strong> Guaranteed spot for ₹50 extra per day</li>
+                        <li><strong>Frequent flyer program:</strong> Earn points for free parking days</li>
+                        <li><strong>Meet & Greet:</strong> Special service for ₹200 additional</li>
+                    </ul>
+                </div>
+                
+                <div class="booking-actions">
+                    <button onclick="bookParking('airport')">
+                        <i class="fas fa-calendar-check"></i> Book Airport Parking
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Show pricing for selected location
+        function showPricing(location) {
+            // Hide all pricing contents
+            document.querySelectorAll('.pricing-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.pricing-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate selected tab
+            event.currentTarget.classList.add('active');
+            
+            // Show selected content
+            document.getElementById(location + '-pricing').classList.add('active');
+        }
+        
+        // Book parking at selected location
+        function bookParking(location) {
+            // Store selected location for booking page
+            localStorage.setItem('selectedLocation', location);
+            window.location.href = 'parking.html';
+        }
+        
+        // Initialize the pricing page
+        function initPricing() {
+            // Set the first tab as active by default
+            document.querySelector('.pricing-tab').classList.add('active');
+            document.getElementById('inorbit-pricing').classList.add('active');
+        }
+        
+        // Initialize when page loads
+        window.onload = initPricing;
+    </script>
+</body>
+</html>

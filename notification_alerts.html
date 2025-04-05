@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        .header {
+            background-color: #004899;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .container {
+            background: white;
+            width: 60%;
+            margin: 50px auto;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            color: #004899;
+            font-size: 28px;
+        }
+
+        .alert {
+            background-color: #ffc107;
+            color: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #004899;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="logo.png" alt="Logo">
+        <h1>SmartPark</h1>
+    </div>
+
+    <h2>Notifications & Alerts</h2>
+    <div id="alerts-container"></div>
+
+    <h2>Parking Slot Information</h2>
+    <table>
+        <tr>
+            <th>Slot Number</th>
+            <th>Status</th>
+            <th>Vehicle Type</th>
+            <th>Last Occupied</th>
+        </tr>
+        <tr>
+            <td>101</td>
+            <td style="background-color: #28a745; color: white;">Available</td>
+            <td>Car</td>
+            <td>2 days ago</td>
+        </tr>
+        <tr>
+            <td>102</td>
+            <td style="background-color: #dc3545; color: white;">Occupied</td>
+            <td>Motorcycle</td>
+            <td>Today</td>
+        </tr>
+        <tr>
+            <td>103</td>
+            <td style="background-color: #ffc107; color: black;">Reserved</td>
+            <td>Electric Vehicle</td>
+            <td>Yesterday</td>
+        </tr>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let alerts = JSON.parse(localStorage.getItem("vehicleAlerts")) || [
+                { message: "Oil change due on 25th March." },
+                { message: "Insurance expiring on 5th April! Renew soon." },
+                { message: "Tire rotation recommended after 1000 km." }
+            ];
+
+            let alertsContainer = document.getElementById("alerts-container");
+            alerts.forEach(alert => {
+                let div = document.createElement("div");
+                div.className = "alert";
+                div.innerText = alert.message;
+                alertsContainer.appendChild(div);
+            });
+        });
+    </script>
+</body>
+</html>

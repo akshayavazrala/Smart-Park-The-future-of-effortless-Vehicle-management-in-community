@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('realpro.jpg') no-repeat center center/cover;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+        .overlay {
+            background: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .header {
+            background: rgba(0, 74, 153, 0.9);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            position: relative;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .header i {
+            font-size: 32px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 85vh;
+            gap: 50px;
+            position: relative;
+        }
+        .box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            width: 380px;
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .box h2 {
+            margin-bottom: 20px;
+            color: #00aaff;
+        }
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        .input-field i {
+            margin-right: 10px;
+        }
+        .input-field input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            width: 100%;
+        }
+        .input-field input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .btn {
+            display: block;
+            margin: 10px auto;
+            padding: 14px;
+            width: 100%;
+            border: none;
+            background: #007acc;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #005b99;
+        }
+        .forgot-password {
+            font-size: 14px;
+            color: #00aaff;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+        }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            background: rgba(0, 74, 153, 0.9);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+        
+        /* Forgot Password Popup */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .forgot-password-popup {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            max-width: 90%;
+        }
+        .forgot-password-popup h3 {
+            margin-top: 0;
+            color: #007acc;
+            text-align: center;
+        }
+        .forgot-password-popup .input-container {
+            margin-bottom: 15px;
+        }
+        .forgot-password-popup label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        .forgot-password-popup input {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .forgot-password-popup input:focus {
+            border-color: #007acc;
+            outline: none;
+        }
+        .forgot-password-popup .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .forgot-password-popup button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .forgot-password-popup .save-btn {
+            background-color: #007acc;
+            color: white;
+            border: none;
+        }
+        .forgot-password-popup .save-btn:hover {
+            background-color: #005b99;
+        }
+        .forgot-password-popup .cancel-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .forgot-password-popup .cancel-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="header">
+        <i class="fa fa-car"></i> Vehicle Registration System
+    </div>
+    <div class="container">
+        <div class="box">
+            <h2><i class="fa fa-user"></i> User Login</h2>
+            <div class="input-field">
+                <i class="fa fa-user"></i>
+                <input type="text" id="user-username" placeholder="Username">
+            </div>
+            <div class="input-field">
+                <i class="fa fa-lock"></i>
+                <input type="password" id="user-password" placeholder="Password">
+            </div>
+            <button class="btn" onclick="login('user')">Login</button>
+            <a href="#" class="forgot-password" onclick="showForgotPasswordPopup('user')">Forgot Password?</a>
+            <button class="btn" onclick="window.location.href='new_user_registration.html'">New User? Register</button>
+        </div>
+        <div class="box">
+            <h2><i class="fa fa-user-tie"></i> Admin Login</h2>
+            <div class="input-field">
+                <i class="fa fa-user-tie"></i>
+                <input type="text" id="admin-username" placeholder="Admin ID">
+            </div>
+            <div class="input-field">
+                <i class="fa fa-lock"></i>
+                <input type="password" id="admin-password" placeholder="Password">
+            </div>
+            <button class="btn" onclick="login('admin')">Login</button>
+            <a href="#" class="forgot-password" onclick="showForgotPasswordPopup('admin')">Forgot Password?</a>
+            <button class="btn" onclick="window.location.href='new_user_registration.html'">New Admin? Register</button>
+        </div>
+    </div>
+
+    <!-- Forgot Password Popup -->
+    <div class="popup-overlay" id="forgotPasswordPopup">
+        <div class="forgot-password-popup">
+            <h3><i class="fas fa-key"></i> Reset Password</h3>
+            <div class="input-container">
+                <label for="reset-username">Username</label>
+                <input type="text" id="reset-username" placeholder="Enter your username">
+                <div class="error-message" id="username-error">Username not found</div>
+            </div>
+            <div class="input-container">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password">
+            </div>
+            <div class="input-container">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password">
+                <div class="error-message" id="password-error">Passwords don't match</div>
+            </div>
+            <div class="success-message" id="success-message">Password updated successfully!</div>
+            <div class="btn-container">
+                <button class="cancel-btn" onclick="hideForgotPasswordPopup()">Cancel</button>
+                <button class="save-btn" onclick="resetPassword()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Vehicle Registration System. All rights reserved.
+    </div>
+
+    <script>
+        let currentRole = 'user'; // To track if user or admin is resetting password
+
+        async function login(role) {
+            const usernameInput = document.getElementById(`${role}-username`);
+            const passwordInput = document.getElementById(`${role}-password`);
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+    
+            // Validate inputs
+            if (!username) {
+                alert('Please enter your username');
+                usernameInput.focus();
+                return;
+            }
+            if (!password) {
+                alert('Please enter your password');
+                passwordInput.focus();
+                return;
+            }
+    
+            try {
+                const response = await fetch('http://localhost:5000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password, role }),
+                });
+    
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(text || 'Login failed');
+                }
+                
+                const data = await response.json();
+    
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
+                }
+    
+                if (data.success) {
+            // Store user data in localStorage
+            localStorage.setItem('userData', JSON.stringify(data.user));
+            localStorage.setItem('role', data.role);
+            
+            // Redirect based on role
+            if (data.role === 'user') {
+                window.location.href = 'user_dashboard.html'; // Changed to user module
+            } else if (data.role === 'admin') {
+                window.location.href = 'admin_dashboard.html';
+            }
+                } else {
+                    throw new Error(data.message || 'Invalid credentials');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                passwordInput.value = ''; // Clear password field on error
+                alert(error.message || 'Login failed. Please try again.');
+            }
+        }
+    
+        function showForgotPasswordPopup(role) {
+            currentRole = role;
+            document.getElementById('reset-username').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('username-error').style.display = 'none';
+            document.getElementById('password-error').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('forgotPasswordPopup').style.display = 'flex';
+            
+            // Pre-fill username if it exists in the corresponding field
+            const usernameField = document.getElementById(`${role}-username`);
+            if (usernameField && usernameField.value) {
+                document.getElementById('reset-username').value = usernameField.value;
+            }
+        }
+        
+        function hideForgotPasswordPopup() {
+            document.getElementById('forgotPasswordPopup').style.display = 'none';
+        }
+        
+        async function resetPassword() {
+            const username = document.getElementById('reset-username').value.trim();
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // Reset error messages
+            document.getElementById('username-error').style.display = 'none';
+            document.getElementById('password-error').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            
+            // Validate inputs
+            if (!username) {
+                document.getElementById('username-error').textContent = 'Please enter username';
+                document.getElementById('username-error').style.display = 'block';
+                return;
+            }
+            
+            if (!newPassword || !confirmPassword) {
+                document.getElementById('password-error').textContent = 'Please enter both password fields';
+                document.getElementById('password-error').style.display = 'block';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                document.getElementById('password-error').textContent = 'Passwords don\'t match';
+                document.getElementById('password-error').style.display = 'block';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:5000/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        username, 
+                        newPassword, 
+                        role: currentRole 
+                    }),
+                });
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(text || 'Password reset failed');
+                }
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Password reset failed');
+                }
+                
+                if (data.success) {
+                    document.getElementById('success-message').style.display = 'block';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                                        
+                    // Hide the popup after 2 seconds
+                    setTimeout(() => {
+                        hideForgotPasswordPopup();
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Password reset failed');
+                }
+            } catch (error) {
+                console.error('Password reset error:', error);
+                if (error.message.toLowerCase().includes('user not found')) {
+                    document.getElementById('username-error').textContent = error.message;
+                    document.getElementById('username-error').style.display = 'block';
+                } else {
+                    alert(error.message || 'An error occurred while resetting password. Please try again.');
+                }
+            }
+        }
+    
+        // Allow login on pressing "Enter" key
+        document.getElementById('user-password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login('user');
+        });
+        document.getElementById('admin-password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login('admin');
+        });
+        
+        // Close popup when clicking outside of it
+        document.getElementById('forgotPasswordPopup').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('forgotPasswordPopup')) {
+                hideForgotPasswordPopup();
+            }
+        });
+    </script>
+</body>
+</html>

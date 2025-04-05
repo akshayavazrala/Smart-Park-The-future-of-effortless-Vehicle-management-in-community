@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New User Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <style>
+        /* Your existing CSS styles */
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #004a99;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        h3 {
+            text-align: center;
+            color: #004a99;
+            font-size: 28px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: bold;
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #004a99;
+            outline: none;
+        }
+
+        .submit-btn {
+            background-color: #004a99;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #003366;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="header-left">
+            <img src="logo.jpg" alt="Logo">
+            <h1>SmartPark</h1>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h3>New Registration</h3>
+        <form id="NewUserForm" onsubmit="submitForm(event)">
+            <!-- Personal Information -->
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" required>
+                <span class="error" id="firstNameError"></span>
+
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" required>
+                <span class="error" id="lastNameError"></span>
+
+                <label for="ownerEmail">Primary Email Address</label>
+                <input type="email" id="ownerEmail" name="ownerEmail" required>
+                <span class="error" id="emailError"></span>
+
+                <label for="secondaryEmail">Secondary Email Address</label>
+                <input type="email" id="secondaryEmail" name="secondaryEmail">
+
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <span class="error" id="usernameError"></span>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <span class="error" id="passwordError"></span>
+
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <span class="error" id="confirmPasswordError"></span>
+
+                <label for="ownerPhone">Phone Number</label>
+                <input type="tel" id="ownerPhone" name="ownerPhone" pattern="[0-9]{10}" required>
+                <span class="error" id="phoneError"></span>
+
+                <label for="aadhar">Aadhar number (last 4 digits)</label>
+                <input type="text" id="aadhar" name="aadhar" pattern="[0-9]{4}" required>
+                <span class="error" id="aadharError"></span>
+
+                <label for="ownerAddress">Address</label>
+                <input type="text" id="ownerAddress" name="ownerAddress" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Submit Registration</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+    
+            if (!validateForm()) {
+                return;
+            }
+    
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                ownerEmail: document.getElementById('ownerEmail').value,
+                secondaryEmail: document.getElementById('secondaryEmail').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                ownerPhone: document.getElementById('ownerPhone').value,
+                aadhar: document.getElementById('aadhar').value,
+                ownerAddress: document.getElementById('ownerAddress').value,
+            };
+    
+            try {
+                const response = await fetch('http://localhost:5000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+    
+                const data = await response.json();
+    
+                if (!response.ok) {
+                    throw new Error(data.message || 'Registration failed');
+                }
+    
+                alert(data.message || 'Registration successful!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message || 'An error occurred. Please try again.');
+            }
+        }
+    
+        function validateForm() {
+            let isValid = true;
+    
+            // First Name Validation
+            const firstName = document.getElementById('firstName').value;
+            if (firstName.trim() === '') {
+                document.getElementById('firstNameError').innerText = 'First name is required.';
+                isValid = false;
+            } else {
+                document.getElementById('firstNameError').innerText = '';
+            }
+    
+            // Last Name Validation
+            const lastName = document.getElementById('lastName').value;
+            if (lastName.trim() === '') {
+                document.getElementById('lastNameError').innerText = 'Last name is required.';
+                isValid = false;
+            } else {
+                document.getElementById('lastNameError').innerText = '';
+            }
+    
+            // Password Match Validation
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').innerText = 'Passwords do not match.';
+                isValid = false;
+            } else {
+                document.getElementById('confirmPasswordError').innerText = '';
+            }
+    
+            // Aadhar Number Validation
+            const aadhar = document.getElementById('aadhar').value;
+            if (!/^[0-9]{4}$/.test(aadhar)) {
+                document.getElementById('aadharError').innerText = 'Enter 4-digit Aadhar number.';
+                isValid = false;
+            } else {
+                document.getElementById('aadharError').innerText = '';
+            }
+    
+            return isValid;
+        }
+    </script>
+</body>
+</html>
