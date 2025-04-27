@@ -491,7 +491,6 @@
             text-decoration: underline;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -544,8 +543,7 @@
         </div>
         <div class="header-right">
             <div class="user-profile">
-                <div class="user-avatar">JS</div>
-                <span>John Smith</span>
+                <div class="profile-img" id="profileInitials"></div>
             </div>
         </div>
     </header>
@@ -581,7 +579,7 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="vehicleType" class="required">Vehicle Type</label>
-                                <select id="vehicleType" required>
+                                <select id="vehicleType" name="vehicleType" required>
                                     <option value="">Select Type</option>
                                     <option value="car">Car</option>
                                     <option value="suv">SUV</option>
@@ -593,49 +591,49 @@
                             
                             <div class="form-group">
                                 <label for="manufacturer" class="required">Manufacturer (Make)</label>
-                                <input type="text" id="manufacturer" required>
+                                <input type="text" id="manufacturer" name="manufacturer" required>
                                 <div class="error-message">Please enter the manufacturer</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="model" class="required">Model</label>
-                                <input type="text" id="model" required>
+                                <input type="text" id="model" name="model" required>
                                 <div class="error-message">Please enter the model</div>
                             </div>
-                            
+
                             <div class="form-group">
-                                <label for="year" class="required">Year</label>
-                                <input type="number" id="year" min="1900" max="2099" required>
-                                <div class="error-message">Please enter a valid year</div>
+                                <label for="year" class="required">Manufacturing Year</label>
+                                <input type="number" id="year" name="year" min="1900" max="2025" required>
+                                <div class="error-message">Please enter manufacturing year</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="color" class="required">Color</label>
-                                <input type="text" id="color" required>
+                                <input type="text" id="color" name="color" required>
                                 <div class="error-message">Please enter the color</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="seatingCapacity" class="required">Seating Capacity</label>
-                                <input type="number" id="seatingCapacity" min="1" required>
+                                <input type="number" id="seatingCapacity" name="seatingCapacity" min="1" required>
                                 <div class="error-message">Please enter seating capacity</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="engineNumber" class="required">Engine Number</label>
-                                <input type="text" id="engineNumber" required>
+                                <input type="text" id="engineNumber" name="engineNumber" required>
                                 <div class="error-message">Please enter engine number</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="chassisNumber" class="required">Chassis Number</label>
-                                <input type="text" id="chassisNumber" required>
+                                <input type="text" id="chassisNumber" name="chassisNumber" required>
                                 <div class="error-message">Please enter chassis number</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="fuelType" class="required">Fuel Type</label>
-                                <select id="fuelType" required>
+                                <select id="fuelType" name="fuelType" required>
                                     <option value="">Select Fuel Type</option>
                                     <option value="petrol">Petrol</option>
                                     <option value="diesel">Diesel</option>
@@ -647,13 +645,13 @@
                             
                             <div class="form-group">
                                 <label for="purchaseDate" class="required">Purchase Date</label>
-                                <input type="date" id="purchaseDate" required>
+                                <input type="date" id="purchaseDate" name="purchaseDate" required>
                                 <div class="error-message">Please select purchase date</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="specialNumber">Special Number (if any)</label>
-                                <input type="text" id="specialNumber">
+                                <input type="text" id="specialNumber" name="specialNumber">
                             </div>
                         </div>
                         
@@ -681,7 +679,7 @@
                             <div class="form-group">
                                 <label class="required">Aadhar Card Copy</label>
                                 <div class="file-upload">
-                                    <input type="file" id="aadharDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <input type="file" id="aadharDoc" name="aadharDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
                                     <label for="aadharDoc" class="file-upload-label">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>Click to upload or <strong>drag & drop</strong></span>
@@ -693,12 +691,13 @@
                                         <span class="remove-file"><i class="fas fa-times"></i></span>
                                     </div>
                                 </div>
+                                <div class="error-message">Please upload Aadhar card copy</div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="required">Insurance Document</label>
                                 <div class="file-upload">
-                                    <input type="file" id="insuranceDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <input type="file" id="insuranceDoc" name="insuranceDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
                                     <label for="insuranceDoc" class="file-upload-label">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>Click to upload or <strong>drag & drop</strong></span>
@@ -710,12 +709,13 @@
                                         <span class="remove-file"><i class="fas fa-times"></i></span>
                                     </div>
                                 </div>
+                                <div class="error-message">Please upload insurance document</div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="required">Purchase Invoice</label>
                                 <div class="file-upload">
-                                    <input type="file" id="purchaseDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <input type="file" id="purchaseDoc" name="purchaseDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
                                     <label for="purchaseDoc" class="file-upload-label">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>Click to upload or <strong>drag & drop</strong></span>
@@ -727,12 +727,13 @@
                                         <span class="remove-file"><i class="fas fa-times"></i></span>
                                     </div>
                                 </div>
+                                <div class="error-message">Please upload purchase invoice</div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="required">License Copy</label>
                                 <div class="file-upload">
-                                    <input type="file" id="licenseDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                    <input type="file" id="licenseDoc" name="licenseDoc" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png" required>
                                     <label for="licenseDoc" class="file-upload-label">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>Click to upload or <strong>drag & drop</strong></span>
@@ -744,6 +745,7 @@
                                         <span class="remove-file"><i class="fas fa-times"></i></span>
                                     </div>
                                 </div>
+                                <div class="error-message">Please upload license copy</div>
                             </div>
                         </div>
                         
@@ -783,14 +785,14 @@
                                     <button type="button" class="refresh-captcha" onclick="generateCaptcha()">
                                         <i class="fas fa-sync-alt"></i>
                                     </button>
-                                    <input type="text" id="captchaInput" placeholder="Enter CAPTCHA" required style="flex: 1;">
+                                    <input type="text" id="captchaInput" name="captchaInput" placeholder="Enter CAPTCHA" required style="flex: 1;">
                                 </div>
                                 <div class="error-message">Please enter the correct CAPTCHA</div>
                             </div>
                             
                             <div class="form-group full-width">
                                 <div class="terms-checkbox">
-                                    <input type="checkbox" id="agreeTerms" required>
+                                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
                                     <label for="agreeTerms" class="terms-text">
                                         I certify that all information provided is accurate and complete. I agree to the 
                                         <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
@@ -839,9 +841,14 @@
             // Step navigation
             document.querySelectorAll('.next-step').forEach(button => {
                 button.addEventListener('click', function() {
-                    const nextStep = this.getAttribute('data-next');
-                    if (validateStep(parseInt(nextStep) - 1)) {
+                    const currentSection = document.querySelector('.form-section.active');
+                    const currentStep = parseInt(currentSection.getAttribute('data-section'));
+                    const nextStep = parseInt(this.getAttribute('data-next'));
+                    
+                    if (validateStep(currentStep)) {
                         navigateToStep(nextStep);
+                    } else {
+                        console.log('Validation failed for step', currentStep);
                     }
                 });
             });
@@ -867,6 +874,12 @@
                     const fileName = file.name;
                     const fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
                     
+                    if (file.size > 5 * 1024 * 1024) {
+                        this.parentElement.parentElement.classList.add('error');
+                        this.parentElement.parentElement.querySelector('.error-message').textContent = 'File size exceeds 5MB limit';
+                        return;
+                    }
+                    
                     // Update preview
                     preview.querySelector('.file-name').textContent = fileName;
                     preview.querySelector('.file-size').textContent = fileSize;
@@ -882,6 +895,7 @@
                 e.stopPropagation();
                 input.value = '';
                 preview.style.display = 'none';
+                input.parentElement.parentElement.classList.add('error');
             });
         }
         
@@ -896,133 +910,171 @@
         }
         
         function validateStep(step) {
-            let isValid = true;
-            
-            if (step === 1) {
-                // Validate vehicle information
-                const requiredFields = [
-                    'vehicleType', 'manufacturer', 'model', 'year', 
-                    'color', 'seatingCapacity', 'engineNumber', 
-                    'chassisNumber', 'fuelType', 'purchaseDate'
-                ];
-                
-                requiredFields.forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    const formGroup = field.closest('.form-group');
-                    
-                    if (!field.value) {
-                        formGroup.classList.add('error');
-                        isValid = false;
-                    } else {
-                        formGroup.classList.remove('error');
-                        
-                        // Additional validation for specific fields
-                        if (fieldId === 'year') {
-                            const year = parseInt(field.value);
-                            if (isNaN(year) || year < 1900 || year > new Date().getFullYear() + 1) {
-                                formGroup.classList.add('error');
-                                formGroup.querySelector('.error-message').textContent = 'Please enter a valid year';
-                                isValid = false;
-                            }
-                        }
-                    }
-                });
-            } else if (step === 2) {
-                // Validate documents
-                const requiredFiles = ['aadharDoc', 'insuranceDoc', 'purchaseDoc', 'licenseDoc'];
-                
-                requiredFiles.forEach(fileId => {
-                    const fileInput = document.getElementById(fileId);
-                    const formGroup = fileInput.closest('.form-group');
-                    
-                    if (!fileInput.files || !fileInput.files[0]) {
-                        formGroup.classList.add('error');
-                        isValid = false;
-                    } else {
-                        // Check file size (max 5MB)
-                        const file = fileInput.files[0];
-                        if (file.size > 5 * 1024 * 1024) {
-                            formGroup.classList.add('error');
-                            formGroup.querySelector('.error-message').textContent = 'File size exceeds 5MB limit';
-                            isValid = false;
-                        } else {
-                            formGroup.classList.remove('error');
-                        }
-                    }
-                });
-            }
-            
-            if (!isValid) {
-                // Scroll to first error
-                const firstError = document.querySelector('.error');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
-            
-            return isValid;
+  console.log('Validating step', step);
+  let isValid = true;
+  
+  if (step === 1) {
+    // Validate vehicle information
+    const requiredFields = [
+      'vehicleType', 'manufacturer', 'model', 'year',
+      'color', 'seatingCapacity', 'engineNumber', 
+      'chassisNumber', 'fuelType', 'purchaseDate'
+    ];
+    
+    requiredFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      const formGroup = field.closest('.form-group');
+      
+      if (field.tagName === 'SELECT') {
+        if (!field.value || field.selectedIndex === 0) {
+          formGroup.classList.add('error');
+          isValid = false;
+        } else {
+          formGroup.classList.remove('error');
         }
+      } else if (!field.value) {
+        formGroup.classList.add('error');
+        isValid = false;
+      } else {
+        formGroup.classList.remove('error');
+        
+        // Special validation for year and seating capacity
+        if (fieldId === 'year') {
+          const year = parseInt(field.value);
+          const currentYear = new Date().getFullYear();
+          if (isNaN(year) || year < 1900 || year > currentYear) {
+            formGroup.classList.add('error');
+            formGroup.querySelector('.error-message').textContent = `Please enter a valid year between 1900 and ${currentYear}`;
+            isValid = false;
+          }
+        } else if (fieldId === 'seatingCapacity') {
+          const seats = parseInt(field.value);
+          if (isNaN(seats)) {
+            formGroup.classList.add('error');
+            formGroup.querySelector('.error-message').textContent = 'Please enter a valid number';
+            isValid = false;
+          }
+        }
+      }
+
+      const purchaseDate = document.getElementById('purchaseDate').value;
+    if (!purchaseDate || isNaN(new Date(purchaseDate).getTime())) {
+      document.getElementById('purchaseDate').closest('.form-group').classList.add('error');
+      document.querySelector('#purchaseDate + .error-message').textContent = 'Please select a valid date';
+      isValid = false;
+    }
+    });
+  } else if (step === 2) {
+    // Validate documents
+    const requiredFiles = ['aadharDoc', 'insuranceDoc', 'purchaseDoc', 'licenseDoc'];
+    
+    requiredFiles.forEach(fileId => {
+      const fileInput = document.getElementById(fileId);
+      const formGroup = fileInput.closest('.form-group');
+      
+      if (!fileInput.files || !fileInput.files[0]) {
+        formGroup.classList.add('error');
+        isValid = false;
+      } else {
+        const file = fileInput.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          formGroup.classList.add('error');
+          formGroup.querySelector('.error-message').textContent = 'File size exceeds 5MB limit';
+          isValid = false;
+        } else {
+          formGroup.classList.remove('error');
+        }
+      }
+    });
+  } else if (step === 3) {
+    // Validate CAPTCHA and terms
+    const captchaInput = document.getElementById('captchaInput');
+    const termsCheckbox = document.getElementById('agreeTerms');
+    
+    if (captchaInput.value !== document.getElementById('captchaText').textContent) {
+      captchaInput.closest('.form-group').classList.add('error');
+      isValid = false;
+    } else {
+      captchaInput.closest('.form-group').classList.remove('error');
+    }
+    
+    if (!termsCheckbox.checked) {
+      termsCheckbox.closest('.form-group').classList.add('error');
+      isValid = false;
+    } else {
+      termsCheckbox.closest('.form-group').classList.remove('error');
+    }
+  }
+  
+  if (!isValid) {
+    const firstError = document.querySelector('.error');
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+  
+  return isValid;
+}
         
         function navigateToStep(step) {
+            // Hide all sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show current section
+            document.querySelector(`.form-section[data-section="${step}"]`).classList.add('active');
+            
             // Update progress steps
             document.querySelectorAll('.progress-step').forEach(stepElement => {
                 const stepNumber = parseInt(stepElement.getAttribute('data-step'));
+                stepElement.classList.remove('active', 'completed');
+                
                 if (stepNumber < step) {
                     stepElement.classList.add('completed');
-                    stepElement.classList.remove('active');
-                } else if (stepNumber == step) {
+                } else if (stepNumber === step) {
                     stepElement.classList.add('active');
-                    stepElement.classList.remove('completed');
-                } else {
-                    stepElement.classList.remove('active', 'completed');
                 }
             });
             
-            // Show/hide sections
-            document.querySelectorAll('.form-section').forEach(section => {
-                if (section.getAttribute('data-section') === step) {
-                    section.classList.add('active');
-                } else {
-                    section.classList.remove('active');
-                }
-            });
-            
-            // If going to review step, populate review information
-            if (step === '3') {
+            // Special handling for review step
+            if (step === 3) {
                 populateReviewInfo();
             }
         }
         
         function populateReviewInfo() {
-            // Vehicle information
-            const vehicleInfo = document.getElementById('reviewVehicleInfo');
-            vehicleInfo.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <div><strong>Type:</strong> ${document.getElementById('vehicleType').options[document.getElementById('vehicleType').selectedIndex].text}</div>
-                    <div><strong>Make:</strong> ${document.getElementById('manufacturer').value}</div>
-                    <div><strong>Model:</strong> ${document.getElementById('model').value}</div>
-                    <div><strong>Year:</strong> ${document.getElementById('year').value}</div>
-                    <div><strong>Color:</strong> ${document.getElementById('color').value}</div>
-                    <div><strong>Seats:</strong> ${document.getElementById('seatingCapacity').value}</div>
-                    <div><strong>Engine No:</strong> ${document.getElementById('engineNumber').value}</div>
-                    <div><strong>Chassis No:</strong> ${document.getElementById('chassisNumber').value}</div>
-                    <div><strong>Fuel Type:</strong> ${document.getElementById('fuelType').options[document.getElementById('fuelType').selectedIndex].text}</div>
-                    <div><strong>Purchase Date:</strong> ${document.getElementById('purchaseDate').value}</div>
-                    ${document.getElementById('specialNumber').value ? `<div><strong>Special No:</strong> ${document.getElementById('specialNumber').value}</div>` : ''}
-                </div>
-            `;
-            
-            // Documents
-            const documentsInfo = document.getElementById('reviewDocuments');
-            documentsInfo.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr; gap: 0.5rem;">
-                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('aadharDoc').files[0]?.name || 'No file'}</div>
-                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('insuranceDoc').files[0]?.name || 'No file'}</div>
-                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('purchaseDoc').files[0]?.name || 'No file'}</div>
-                    <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> ${document.getElementById('licenseDoc').files[0]?.name || 'No file'}</div>
-                </div>
-            `;
-        }
+  // Vehicle information
+  const vehicleInfo = document.getElementById('reviewVehicleInfo');
+  const vehicleTypeText = document.getElementById('vehicleType').options[document.getElementById('vehicleType').selectedIndex].text;
+  const fuelTypeText = document.getElementById('fuelType').options[document.getElementById('fuelType').selectedIndex].text;
+  vehicleInfo.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+      <div><strong>Type:</strong> ${vehicleTypeText}</div>
+      <div><strong>Make:</strong> ${document.getElementById('manufacturer').value}</div>
+      <div><strong>Model:</strong> ${document.getElementById('model').value}</div>
+      <div><strong>Year:</strong> ${document.getElementById('year').value}</div>
+      <div><strong>Color:</strong> ${document.getElementById('color').value}</div>
+      <div><strong>Seats:</strong> ${document.getElementById('seatingCapacity').value}</div>
+      <div><strong>Engine No:</strong> ${document.getElementById('engineNumber').value}</div>
+      <div><strong>Chassis No:</strong> ${document.getElementById('chassisNumber').value}</div>
+      <div><strong>Fuel Type:</strong> ${fuelTypeText}</div>
+      <div><strong>Purchase Date:</strong> ${document.getElementById('purchaseDate').value}</div>
+      ${document.getElementById('specialNumber').value ? `<div><strong>Special No:</strong> ${document.getElementById('specialNumber').value}</div>` : ''}
+    </div>
+  `;
+  
+  // Documents (unchanged)
+  const documentsInfo = document.getElementById('reviewDocuments');
+  documentsInfo.innerHTML = `
+    <div style="display: grid; grid-template-columns: 1fr; gap: 0.5rem;">
+      <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> Aadhar: ${document.getElementById('aadharDoc').files[0]?.name || 'No file'}</div>
+      <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> Insurance: ${document.getElementById('insuranceDoc').files[0]?.name || 'No file'}</div>
+      <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> Purchase: ${document.getElementById('purchaseDoc').files[0]?.name || 'No file'}</div>
+      <div><i class="fas fa-file-pdf" style="color: var(--primary-color);"></i> License: ${document.getElementById('licenseDoc').files[0]?.name || 'No file'}</div>
+    </div>
+  `;
+}
         
         function showLoading(show) {
             const submitBtn = document.getElementById('submitBtn');
@@ -1038,89 +1090,71 @@
         }
         
         async function submitForm() {
-            // Validate final step
-            if (!validateStep(3)) {
-                return;
-            }
-            
-            // Check CAPTCHA
-            const enteredCaptcha = document.getElementById("captchaInput").value;
-            const generatedCaptcha = document.getElementById("captchaText").textContent;
-            
-            if (enteredCaptcha !== generatedCaptcha) {
-                document.getElementById("captchaInput").closest('.form-group').classList.add('error');
-                document.getElementById("captchaInput").closest('.form-group').querySelector('.error-message').textContent = 'CAPTCHA does not match';
-                generateCaptcha();
-                return;
-            }
-            
-            // Check terms agreement
-            if (!document.getElementById('agreeTerms').checked) {
-                document.getElementById('agreeTerms').closest('.form-group').classList.add('error');
-                return;
-            }
-            
-            // Get user data from localStorage
-            const userData = JSON.parse(localStorage.getItem('userData'));
-            if (!userData || !userData.id) {
-                alert('Session expired. Please login again.');
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            // Create FormData object
-            const formData = new FormData();
-            
-            // Add all form fields
-            formData.append('userId', userData.id);
-            formData.append('vehicleType', document.getElementById('vehicleType').value);
-            formData.append('manufacturer', document.getElementById('manufacturer').value);
-            formData.append('model', document.getElementById('model').value);
-            formData.append('year', document.getElementById('year').value);
-            formData.append('seatingCapacity', document.getElementById('seatingCapacity').value);
-            formData.append('color', document.getElementById('color').value);
-            formData.append('engineNumber', document.getElementById('engineNumber').value);
-            formData.append('chassisNumber', document.getElementById('chassisNumber').value);
-            formData.append('fuelType', document.getElementById('fuelType').value);
-            formData.append('purchaseDate', document.getElementById('purchaseDate').value);
-            
-            // Add special number if provided
-            const specialNumber = document.getElementById('specialNumber').value;
-            if (specialNumber) {
-                formData.append('specialNumber', specialNumber);
-            }
-            
-            // Add files
-            formData.append('aadharDoc', document.getElementById('aadharDoc').files[0]);
-            formData.append('insuranceDoc', document.getElementById('insuranceDoc').files[0]);
-            formData.append('purchaseDoc', document.getElementById('purchaseDoc').files[0]);
-            formData.append('licenseDoc', document.getElementById('licenseDoc').files[0]);
-            
-            // Show loading state
-            showLoading(true);
-            
-            try {
-                const response = await fetch('http://localhost:5000/register-vehicle', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert("Vehicle registration successful!");
-                    window.location.href = 'dashboard.html'; // Redirect to dashboard
-                } else {
-                    alert("Registration failed: " + (data.message || 'Unknown error'));
-                    generateCaptcha();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert("An error occurred during registration. Please try again.");
-            } finally {
-                showLoading(false);
-            }
-        }
+  if (!validateStep(3)) {
+    return;
+  }
+
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  if (!userData || !userData.id) {
+    alert('Session expired. Please login again.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  showLoading(true);
+  
+  // Create a new FormData object
+  const formData = new FormData();
+  
+  // Add each field individually to ensure they are set correctly
+  formData.append('vehicleType', document.getElementById('vehicleType').value);
+  formData.append('manufacturer', document.getElementById('manufacturer').value);
+  formData.append('model', document.getElementById('model').value);
+  formData.append('year', document.getElementById('year').value);
+  formData.append('color', document.getElementById('color').value);
+  formData.append('seatingCapacity', document.getElementById('seatingCapacity').value);
+  formData.append('engineNumber', document.getElementById('engineNumber').value);
+  formData.append('chassisNumber', document.getElementById('chassisNumber').value);
+  formData.append('fuelType', document.getElementById('fuelType').value);
+  formData.append('purchaseDate', document.getElementById('purchaseDate').value);
+  formData.append('specialNumber', document.getElementById('specialNumber').value || '');
+  
+  // Add file uploads
+  formData.append('aadharDoc', document.getElementById('aadharDoc').files[0]);
+  formData.append('insuranceDoc', document.getElementById('insuranceDoc').files[0]);
+  formData.append('purchaseDoc', document.getElementById('purchaseDoc').files[0]);
+  formData.append('licenseDoc', document.getElementById('licenseDoc').files[0]);
+  
+  // Add CAPTCHA response and terms agreement
+  formData.append('captchaInput', document.getElementById('captchaInput').value);
+  formData.append('agreeTerms', document.getElementById('agreeTerms').checked);
+  
+  try {
+    const response = await fetch('http://localhost:5000/register-vehicle', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${userData.id}`
+      },
+      body: formData
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      alert("Vehicle registration successful!");
+      window.location.href = 'user_dashboard.html';
+    } else {
+      alert("Registration failed: " + (data.message || 'Unknown error'));
+      generateCaptcha();
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert("An error occurred during registration. Please try again.");
+    generateCaptcha();
+  } finally {
+    showLoading(false);
+  }
+}
     </script>
 </body>
 </html>

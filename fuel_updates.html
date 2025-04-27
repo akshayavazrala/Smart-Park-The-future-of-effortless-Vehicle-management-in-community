@@ -1,0 +1,821 @@
+<!-- fuel_updates.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Fuel Updates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #93c5fd;
+            --secondary-color: #10b981;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gray-color: #94a3b8;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        .header {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo img {
+            height: 2.5rem;
+            width: auto;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+        
+        .logo-tagline {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: var(--gray-color);
+            letter-spacing: 0.5px;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background-color: white;
+            padding: 0 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-item > a {
+            display: block;
+            padding: 1.25rem 1.5rem;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-item.active > a {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .nav-item.active > a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .date-display {
+            font-size: 0.95rem;
+            color: var(--gray-color);
+        }
+        
+        /* Fuel Dashboard */
+        .fuel-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .fuel-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Fuel Card */
+        .fuel-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .fuel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fuel-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .fuel-type {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .fuel-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+        
+        .petrol {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        
+        .diesel {
+            background: linear-gradient(135deg, #10b981, #047857);
+        }
+        
+        .cng {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .fuel-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .fuel-price {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .price-up {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+        }
+        
+        .price-down {
+            background-color: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+        }
+        
+        .price-neutral {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+        }
+        
+        .fuel-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        /* Fuel Trends */
+        .trends-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .trend-chart {
+            height: 300px;
+            background-color: #f8fafc;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNDgsIDI1MCwgMjUyLCAxKSI+PC9yZWN0PjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgeD0iMjAiIHk9IjIwIiBmaWxsPSJyZ2JhKDI0OCwgMjUwLCAyNTIsIDEpIj48L3JlY3Q+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIj48L3JlY3Q+PC9zdmc+');
+        }
+        
+        /* Fuel Stations */
+        .stations-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .stations-list {
+            margin-top: 1rem;
+        }
+        
+        .station-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .station-item:last-child {
+            border-bottom: none;
+        }
+        
+        .station-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .station-info {
+            flex: 1;
+        }
+        
+        .station-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .station-location {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        .station-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+        
+        .chat-btn {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .chat-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+        
+        .chat-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .chat-container {
+            position: absolute;
+            bottom: 4.5rem;
+            right: 0;
+            width: 350px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .chat-container.open {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-title {
+            font-weight: 500;
+        }
+        
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        
+        .chat-body {
+            padding: 1rem;
+            height: 300px;
+            overflow-y: auto;
+        }
+        
+        .chat-message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .bot-message {
+            background-color: #f1f5f9;
+            border-top-left-radius: 0;
+            margin-right: auto;
+        }
+        
+        .user-message {
+            background-color: var(--primary-light);
+            border-top-right-radius: 0;
+            margin-left: auto;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 0.75rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        
+        .chat-input button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        /* Existing styles from original code */
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #93c5fd;
+            --secondary-color: #10b981;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gray-color: #94a3b8;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        /* Add station card styles */
+        .station-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .station-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .station-badge {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .station-content {
+            flex: 1;
+        }
+
+        .station-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .station-distance {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            padding: 0.35rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .station-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .price-tag {
+            font-weight: 600;
+            color: var(--secondary-color);
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .community-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            color: var(--dark-color);
+        }
+
+        .update-time {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .station-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .station-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .price-tag {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .fuel-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo">
+            <img src="logo.jpg" alt="SmartPark Logo">
+            <div class="logo-text">
+                <span class="logo-name">SmartPark</span>
+                <span class="logo-tagline">EFFORTLESS VEHICLE MANAGEMENT</span>
+            </div>
+        </div>
+        
+        <div class="nav-controls">
+            <a href="#" class="nav-link">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-envelope"></i>
+                <span>Contact</span>
+            </a>
+            
+            <div class="profile">
+                <button class="profile-btn">
+                    <div class="profile-img" id="profileInitials"></div>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Navigation -->
+    <nav class="navbar">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="user_dashboard.html">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="vehicle_registration.html">Vehicle Registration</a>
+            </li>
+            <li class="nav-item">
+                <a href="parking_slot.html">Parking Management</a>
+            </li>
+            <li class="nav-item active">
+                <a href="fuel_updates.html">Fuel Updates</a>
+            </li>
+            <li class="nav-item">
+                <a href="services.html">Service</a>
+            </li>
+            <li class="nav-item">
+                <a href="notification_alerts.html">Notifications</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1 class="page-title">Fuel Updates</h1>
+            <div class="date-display">Friday, April 22, 2025</div>
+        </div>
+
+        <!-- Fuel Price Cards -->
+        <div class="fuel-dashboard">
+            <div class="fuel-card">
+                <div class="fuel-card-header">
+                    <div class="fuel-type">
+                        <div class="fuel-icon petrol">
+                            <i class="fas fa-gas-pump"></i>
+                        </div>
+                        <div>
+                            <div class="fuel-name">Petrol</div>
+                            <div class="fuel-price">₹96.42</div>
+                            <div class="price-change price-up">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>₹0.50 (0.52%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fuel-meta">
+                    <span>Hyderabad</span>
+                    <span>Today</span>
+                </div>
+            </div>
+
+            <div class="fuel-card">
+                <div class="fuel-card-header">
+                    <div class="fuel-type">
+                        <div class="fuel-icon diesel">
+                            <i class="fas fa-gas-pump"></i>
+                        </div>
+                        <div>
+                            <div class="fuel-name">Diesel</div>
+                            <div class="fuel-price">₹89.20</div>
+                            <div class="price-change price-down">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>₹0.30 (0.34%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fuel-meta">
+                    <span>Hyderabad</span>
+                    <span>Today</span>
+                </div>
+            </div>
+
+            <div class="fuel-card">
+                <div class="fuel-card-header">
+                    <div class="fuel-type">
+                        <div class="fuel-icon cng">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div>
+                            <div class="fuel-name">CNG</div>
+                            <div class="fuel-price">₹72.50</div>
+                            <div class="price-change price-neutral">
+                                <i class="fas fa-equals"></i>
+                                <span>No change</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fuel-meta">
+                    <span>Hyderabad</span>
+                    <span>Today</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="update-time">
+            Last updated: Today at 6:00 AM | Source: Ministry of Petroleum & Natural Gas
+        </div>
+
+        <div class="community-info">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Nearby Fuel Stations - My Home Bhooja</span>
+        </div>
+
+        <div class="stations-container">
+            <div class="station-card">
+                <div class="station-badge">
+                    <i class="fas fa-gas-pump"></i>
+                </div>
+                <div class="station-content">
+                    <div class="station-header">
+                        <h3 class="station-name">Bharat Petroleum Corporation Limited</h3>
+                        <span class="station-distance">0.8 km</span>
+                    </div>
+                    <div class="station-meta">
+                        <span><i class="fas fa-clock"></i> 6 AM - 10 PM</span>
+                        <span><i class="fas fa-phone"></i> 040-12345678</span>
+                    </div>
+                    <div class="price-tag">
+                        <span class="petrol-price">Petrol: ₹96.50</span>
+                        <span class="diesel-price">Diesel: ₹89.20</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="station-card">
+                <div class="station-badge">
+                    <i class="fas fa-gas-pump"></i>
+                </div>
+                <div class="station-content">
+                    <div class="station-header">
+                        <h3 class="station-name">Indial oil</h3>
+                        <span class="station-distance">1.2 km</span>
+                    </div>
+                    <div class="station-meta">
+                        <span><i class="fas fa-clock"></i> 24 Hours</span>
+                        <span><i class="fas fa-phone"></i> 040-23456789</span>
+                    </div>
+                    <div class="price-tag">
+                        <span class="petrol-price">Petrol: ₹96.70</span>
+                        <span class="diesel-price">Diesel: ₹89.40</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-btn" id="chatToggle">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <div class="chat-title">Fuel Assistant</div>
+                <button class="chat-close" id="chatClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-body">
+                <div class="chat-message bot-message">
+                    Hello! I'm your fuel assistant. How can I help you today?
+                </div>
+                <div class="chat-message user-message">
+                    What's the current petrol price?
+                </div>
+                <div class="chat-message bot-message">
+                    The current petrol price in your area is ₹96.42 per liter (updated today at 9:45 AM).
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message...">
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chat toggle functionality
+        const chatToggle = document.getElementById('chatToggle');
+        const chatContainer = document.getElementById('chatContainer');
+        
+        chatToggle.addEventListener('click', () => {
+            chatContainer.classList.toggle('open');
+        });
+
+        document.getElementById('chatClose').addEventListener('click', () => {
+            chatContainer.classList.remove('open');
+        });
+    </script>
+</body>
+</html>

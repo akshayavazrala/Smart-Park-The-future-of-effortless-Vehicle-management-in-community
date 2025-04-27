@@ -4,305 +4,808 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartPark Admin Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Reset and Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f5f7fa;
             display: flex;
+            background-color: #f0f2f5;
+            margin: 0;
         }
 
-        /* Sidebar Styling */
         .sidebar {
             width: 250px;
-            background-color: #004a99;
+            background: #004a99;
             color: white;
             min-height: 100vh;
-            padding: 20px 0;
+            padding: 20px;
             position: fixed;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
         }
 
         .sidebar a {
-            display: flex;
-            align-items: center;
+            display: block;
+            padding: 15px;
             color: white;
             text-decoration: none;
-            padding: 15px 20px;
-            font-size: 16px;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .sidebar a:hover {
-            background-color: #005bb5;
+            transition: 0.3s;
+            border-radius: 8px;
+            margin-bottom: 5px;
         }
 
         .sidebar a i {
-            margin-right: 15px;
+            margin-right: 10px;
         }
 
-        /* Main Content Styling */
+        .sidebar a:hover, .sidebar .active {
+            background: #003f7d;
+        }
+
         .main-content {
             margin-left: 270px;
             padding: 40px;
             width: 100%;
         }
 
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .header {
-            font-size: 28px;
-            font-weight: 600;
-            color: #004a99;
+            margin-bottom: 30px;
         }
 
-        /* Profile Icon */
-        .profile-menu {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .profile-icon {
-            font-size: 32px;
-            color: #004a99;
-        }
-
-        .dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: white;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-            z-index: 10;
-        }
-
-        .dropdown a {
-            display: block;
-            padding: 10px 15px;
-            text-decoration: none;
+        .header h1 {
             color: #333;
-            font-size: 14px;
         }
 
-        .dropdown a:hover {
-            background-color: #f5f5f5;
-        }
-
-        .profile-menu:hover .dropdown {
-            display: block;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        .card-container {
+            display: flex;
             gap: 20px;
-            margin-top: 20px;
+            margin-bottom: 30px;
         }
 
-        .stat-card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 30%;
+            transition: 0.3s;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card i {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #004a99;
+        }
+
+        .card h3 {
+            font-size: 28px;
+            margin: 10px 0;
+        }
+
+        .card p {
+            color: #666;
+            margin: 0;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .box h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* Enhanced Recent Activity Styles */
+        .activity-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            background-color: #f9f9f9;
+            transform: translateX(5px);
+        }
+        
+        .activity-icon {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .parking-icon { background-color: #e3f2fd; color: #1976d2; }
+        .user-icon { background-color: #e8f5e9; color: #388e3c; }
+        .payment-icon { background-color: #fff8e1; color: #ffa000; }
+        .alert-icon { background-color: #ffebee; color: #d32f2f; }
+        .system-icon { background-color: #f3e5f5; color: #7b1fa2; }
+        
+        .activity-content {
+            flex-grow: 1;
+        }
+        
+        .activity-header {
+            display: flex;
             justify-content: space-between;
+            margin-bottom: 5px;
         }
-
-        .stat-card .stat-number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #004a99;
+        
+        .activity-title {
+            font-weight: 600;
+            color: #333;
         }
-
-        .stat-card .stat-title {
-            font-size: 16px;
+        
+        .activity-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .activity-desc {
+            font-size: 14px;
             color: #666;
+            line-height: 1.4;
         }
-
-        .section {
-            margin-top: 40px;
+        
+        .activity-priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 8px;
         }
-
-        .section h2 {
-            font-size: 24px;
+        
+        .priority-high { background-color: #ffcdd2; color: #c62828; }
+        .priority-medium { background-color: #fff9c4; color: #f57f17; }
+        .priority-low { background-color: #e0e0e0; color: #616161; }
+        
+        .activity-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .activity-btn {
+            border: none;
+            background: none;
+            font-size: 12px;
             color: #004a99;
-            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .activity-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .real-time-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #4caf50;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(0.95); opacity: 1; }
         }
 
-        .table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            background-color: white;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
         }
 
-        .table th, .table td {
-            padding: 15px;
+        table th, table td {
+            padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
-        .table th {
-            background-color: #004a99;
-            color: white;
+        table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
         }
 
-        .table tbody tr:hover {
-            background-color: #f1f5f9;
+        table tr:hover {
+            background-color: #f5f5f5;
         }
-
-        .btn {
-            background-color: #004a99;
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            background-color: #e6f7ee;
+            color: #00a854;
+        }
+        
+        .status-pending {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .status-active {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .status-inactive {
+            background-color: #f5f5f5;
+            color: #8c8c8c;
+        }
+        
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+        
+        .filter-btn {
+            background: #004a99;
             color: white;
-            padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            padding: 8px 15px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
         }
 
-        .btn:hover {
-            background-color: #005bb5;
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #004a99;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-
-    <!-- Sidebar -->
     <div class="sidebar">
-        <h2 style="text-align: center;">Admin Dashboard</h2>
-        <a href="#"><i class="fas fa-car"></i> Vehicle Management</a>
-        <a href="#"><i class="fas fa-user"></i> User Management</a>
-        <a href="#"><i class="fas fa-parking"></i> Parking Space Management</a>
-        <a href="#"><i class="fas fa-calendar-alt"></i> Reservation & Bookings</a>
-        <a href="#"><i class="fas fa-dollar-sign"></i> Payment Management</a>
-        <a href="#"><i class="fas fa-chart-line"></i> Reports & Analytics</a>
-        <a href="#"><i class="fas fa-bell"></i> Notifications</a>
-        <a href="#"><i class="fas fa-cogs"></i> System Settings</a>
-        <a href="#"><i class="fas fa-shield-alt"></i> Audit Logs</a>
+        <h2>SmartPark</h2>
+        <a href="#dashboard" class="active"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="#vehicle"><i class="fas fa-car"></i> Vehicle Management</a>
+        <a href="#user"><i class="fas fa-user"></i> User Management</a>
+        <a href="#payment"><i class="fas fa-rupee-sign"></i> Payment Management</a>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-        <div class="header-section">
-            <h1 class="header">Welcome, Admin!</h1>
-
-            <!-- Profile Menu -->
-            <div class="profile-menu">
-                <i class="fas fa-user-circle profile-icon"></i>
-                <div class="dropdown">
-                    <a href="#">View Profile</a>
-                    <a href="#">Settings</a>
-                    <a href="#">Logout</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Summary Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number">450</div>
-                    <div class="stat-title">Registered Vehicles</div>
-                </div>
-                <i class="fas fa-car fa-2x"></i>
-            </div>
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number">320</div>
-                    <div class="stat-title">Registered Users</div>
-                </div>
-                <i class="fas fa-user fa-2x"></i>
-            </div>
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number">25</div>
-                    <div class="stat-title">Active Reservations</div>
-                </div>
-                <i class="fas fa-parking fa-2x"></i>
-            </div>
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number">₹1,25,000</div>
-                    <div class="stat-title">Total Revenue</div>
-                </div>
-                <i class="fas fa-dollar-sign fa-2x"></i>
-            </div>
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number">50</div>
-                    <div class="stat-title">Available Parking Spots</div>
-                </div>
-                <i class="fas fa-check-circle fa-2x"></i>
-            </div>
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number">Healthy</div>
-                    <div class="stat-title">System Status</div>
-                </div>
-                <i class="fas fa-heartbeat fa-2x"></i>
-            </div>
-        </div>
-
-        <!-- Section: User Management Table -->
-        <div class="section">
-            <h2>User Management</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Vehicles</th>
-                        <th>Reservations</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>john.doe@example.com</td>
-                        <td>2</td>
-                        <td>5</td>
-                        <td>Active</td>
-                        <td>
-                            <button class="btn">View</button>
-                            <button class="btn">Suspend</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Jane Smith</td>
-                        <td>jane.smith@example.com</td>
-                        <td>1</td>
-                        <td>3</td>
-                        <td>Active</td>
-                        <td>
-                            <button class="btn">View</button>
-                            <button class="btn">Suspend</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- Dashboard content will be loaded here dynamically -->
     </div>
 
+    <script>
+        // Global variables to store fetched data
+        let vehicleData = [];
+        let userData = [];
+        let paymentData = [];
+        let recentActivities = [];
+
+        // Function to fetch data from server
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`http://localhost:5000/${endpoint}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return null;
+            }
+        }
+
+        // Function to fetch admin dashboard data
+        async function fetchAdminDashboardData() {
+            try {
+                const data = await fetchData('admin/dashboard');
+                if (data && data.success) {
+                    return data;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching admin dashboard data:', error);
+                return null;
+            }
+        }
+
+        // Function to fetch all vehicles
+        async function fetchAllVehicles() {
+            try {
+                const data = await fetchData('admin/vehicles');
+                if (data && data.success) {
+                    vehicleData = data.vehicles;
+                    return vehicleData;
+                }
+                return [];
+            } catch (error) {
+                console.error('Error fetching vehicles:', error);
+                return [];
+            }
+        }
+
+        // Function to fetch all users
+        async function fetchAllUsers() {
+            try {
+                const data = await fetchData('admin/users');
+                if (data && data.success) {
+                    userData = data.users;
+                    return userData;
+                }
+                return [];
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                return [];
+            }
+        }
+
+        // Function to fetch all payments
+        async function fetchAllPayments() {
+            try {
+                const data = await fetchData('admin/bookings');
+                if (data && data.success) {
+                    paymentData = data.bookings;
+                    return paymentData;
+                }
+                return [];
+            } catch (error) {
+                console.error('Error fetching payments:', error);
+                return [];
+            }
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+
+        // Function to format date with time
+        function formatDateTime(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        // Function to get user name by ID
+        function getUserName(userId) {
+            const user = userData.find(u => u.id === userId);
+            return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
+        }
+
+        // Function to calculate total revenue
+        function calculateTotalRevenue() {
+            return paymentData.reduce((total, payment) => total + payment.total_price, 0);
+        }
+
+        // Function to generate vehicle table rows
+        function generateVehicleRows() {
+            return vehicleData.map(vehicle => `
+                <tr>
+                    <td>${vehicle.id}</td>
+                    <td>${vehicle.vehicle_type}</td>
+                    <td>${vehicle.manufacturer}</td>
+                    <td>${vehicle.model}</td>
+                    <td>${vehicle.year || '-'}</td>
+                    <td>${vehicle.color}</td>
+                    <td>${vehicle.fuel_type}</td>
+                    <td>${getUserName(vehicle.user_id)}</td>
+                    <td>${formatDate(vehicle.registration_date)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Function to generate user table rows
+        function generateUserRows() {
+            return userData.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.ownerEmail}</td>
+                    <td>${user.ownerPhone}</td>
+                    <td>${user.aadhar}</td>
+                    <td><span class="status-badge status-${user.role || 'active'}">${user.role || 'active'}</span></td>
+                    <td>
+                        <button class="activity-btn"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="activity-btn"><i class="fas fa-eye"></i> View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Function to generate payment table rows
+        function generatePaymentRows() {
+            return paymentData.map(payment => `
+                <tr>
+                    <td>${payment.booking_id}</td>
+                    <td>${getUserName(payment.user_id)}</td>
+                    <td>${payment.location_name || 'N/A'}</td>
+                    <td>₹${payment.total_price}</td>
+                    <td>${payment.duration} hours</td>
+                    <td>${formatDate(payment.booking_time)}</td>
+                    <td><span class="status-badge status-${payment.status}">${payment.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Function to generate recent activities
+        function generateRecentActivities() {
+            if (!recentActivities || recentActivities.length === 0) {
+                return '<div class="activity-item">No recent activities found</div>';
+            }
+
+            return recentActivities.map(activity => {
+                let iconClass = 'system-icon';
+                let icon = 'fas fa-cog';
+                let priority = 'priority-medium';
+                
+                if (activity.status === 'completed') {
+                    iconClass = 'parking-icon';
+                    icon = 'fas fa-car';
+                    priority = 'priority-low';
+                } else if (activity.status === 'booked') {
+                    iconClass = 'payment-icon';
+                    icon = 'fas fa-dollar-sign';
+                    priority = 'priority-high';
+                } else if (activity.status === 'cancelled') {
+                    iconClass = 'alert-icon';
+                    icon = 'fas fa-exclamation-triangle';
+                    priority = 'priority-high';
+                }
+
+                return `
+                    <div class="activity-item">
+                        <div class="activity-icon ${iconClass}">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-header">
+                                <span class="activity-title">
+                                    Booking ${activity.status}
+                                    <span class="activity-priority ${priority}">${activity.status}</span>
+                                </span>
+                                <span class="activity-time">${formatDateTime(activity.booking_time)}</span>
+                            </div>
+                            <div class="activity-desc">
+                                ${getUserName(activity.user_id)} booked slot ${activity.slot_number} at ${activity.location_name}
+                            </div>
+                            <div class="activity-actions">
+                                <button class="activity-btn"><i class="fas fa-eye"></i> View Details</button>
+                                <button class="activity-btn"><i class="fas fa-user"></i> View User</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Function to show loading spinner
+        function showLoading() {
+            return `
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+        }
+
+        // Function to load page content dynamically
+        async function loadPageContent(page) {
+            const mainContent = document.querySelector('.main-content');
+            
+            switch(page) {
+                case '#dashboard':
+                    mainContent.innerHTML = `
+                        <div class="header">
+                            <h1>Admin Dashboard</h1>
+                        </div>
+                        <div class="card-container">
+                            <a href="#vehicle" class="card">
+                                <i class="fas fa-car"></i>
+                                <h3 id="vehicle-count">0</h3>
+                                <p>Registered Vehicles</p>
+                            </a>
+                            <a href="#user" class="card">
+                                <i class="fas fa-user"></i>
+                                <h3 id="user-count">0</h3>
+                                <p>Registered Users</p>
+                            </a>
+                            <a href="#payment" class="card">
+                                <i class="fas fa-dollar-sign"></i>
+                                <h3 id="revenue-amount">₹0</h3>
+                                <p>Total Revenue</p>
+                            </a>
+                        </div>
+                        <div class="box">
+                            <h2>Recent Activity <span class="real-time-indicator"></span> Live Updates</h2>
+                            <div class="activity-feed" id="activity-feed">
+                                ${showLoading()}
+                            </div>
+                            <div style="text-align: center; margin-top: 15px;">
+                                <button id="load-more" style="background: #004a99; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+                                    <i class="fas fa-sync-alt"></i> Load More Activities
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    // Fetch dashboard data
+                    const dashboardData = await fetchAdminDashboardData();
+                    if (dashboardData) {
+                        document.getElementById('vehicle-count').textContent = dashboardData.stats.totalVehicles;
+                        document.getElementById('user-count').textContent = dashboardData.stats.totalUsers;
+                        document.getElementById('revenue-amount').textContent = `₹${dashboardData.stats.totalRevenue}`;
+                        
+                        recentActivities = dashboardData.recentActivities;
+                        document.getElementById('activity-feed').innerHTML = generateRecentActivities();
+                    } else {
+                        document.getElementById('activity-feed').innerHTML = '<div class="activity-item">Failed to load activities</div>';
+                    }
+                    break;
+                    
+                case '#vehicle':
+                    mainContent.innerHTML = `
+                        <div class="header">
+                            <h1>Vehicle Management</h1>
+                        </div>
+                        <div class="box">
+                            <div class="search-filter">
+                                <input type="text" class="search-box" placeholder="Search vehicles..." id="vehicle-search">
+                                <button class="filter-btn"><i class="fas fa-filter"></i> Filters</button>
+                            </div>
+                            <div id="vehicle-table-container">
+                                ${showLoading()}
+                            </div>
+                        </div>
+                    `;
+
+                    // Fetch vehicles data
+                    const vehicles = await fetchAllVehicles();
+                    if (vehicles.length > 0) {
+                        document.getElementById('vehicle-table-container').innerHTML = `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Type</th>
+                                        <th>Make</th>
+                                        <th>Model</th>
+                                        <th>Year</th>
+                                        <th>Color</th>
+                                        <th>Fuel</th>
+                                        <th>Owner</th>
+                                        <th>Registered On</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${generateVehicleRows()}
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        document.getElementById('vehicle-table-container').innerHTML = '<p>No vehicles found</p>';
+                    }
+                    break;
+                    
+                case '#user':
+                    mainContent.innerHTML = `
+                        <div class="header">
+                            <h1>User Management</h1>
+                        </div>
+                        <div class="box">
+                            <div class="search-filter">
+                                <input type="text" class="search-box" placeholder="Search users..." id="user-search">
+                                <button class="filter-btn"><i class="fas fa-filter"></i> Filters</button>
+                            </div>
+                            <div id="user-table-container">
+                                ${showLoading()}
+                            </div>
+                        </div>
+                    `;
+
+                    // Fetch users data
+                    const users = await fetchAllUsers();
+                    if (users.length > 0) {
+                        document.getElementById('user-table-container').innerHTML = `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Aadhar</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${generateUserRows()}
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        document.getElementById('user-table-container').innerHTML = '<p>No users found</p>';
+                    }
+                    break;
+                    
+                case '#payment':
+                    mainContent.innerHTML = `
+                        <div class="header">
+                            <h1>Payment Management</h1>
+                        </div>
+                        <div class="box">
+                            <div class="search-filter">
+                                <input type="text" class="search-box" placeholder="Search payments..." id="payment-search">
+                                <button class="filter-btn"><i class="fas fa-filter"></i> Filters</button>
+                            </div>
+                            <div id="payment-table-container">
+                                ${showLoading()}
+                            </div>
+                        </div>
+                    `;
+
+                    // Fetch payments data
+                    const payments = await fetchAllPayments();
+                    if (payments.length > 0) {
+                        document.getElementById('payment-table-container').innerHTML = `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>User</th>
+                                        <th>Location</th>
+                                        <th>Amount</th>
+                                        <th>Duration</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${generatePaymentRows()}
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        document.getElementById('payment-table-container').innerHTML = '<p>No payments found</p>';
+                    }
+                    break;
+            }
+        }
+
+        // Function to update active link
+        function updateActiveLink(page) {
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === page) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current page from URL hash
+            const currentPage = window.location.hash || '#dashboard';
+            
+            // Load the appropriate content
+            loadPageContent(currentPage);
+
+            // Handle navigation clicks
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('href');
+                    
+                    // Update browser URL without reload
+                    window.location.hash = page.substring(1);
+                    
+                    // Load the appropriate content
+                    loadPageContent(page);
+                    
+                    // Update active link
+                    updateActiveLink(page);
+                });
+            });
+
+            // Handle browser back/forward buttons
+            window.addEventListener('hashchange', function() {
+                const currentPage = window.location.hash || '#dashboard';
+                loadPageContent(currentPage);
+                updateActiveLink(currentPage);
+            });
+
+            // Handle load more activities
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.id === 'load-more') {
+                    // In a real app, you would fetch more activities here
+                    alert('Loading more activities...');
+                }
+            });
+
+            // Handle search functionality
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.id === 'vehicle-search') {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll('#vehicle-table-container tbody tr');
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                }
+                
+                if (e.target && e.target.id === 'user-search') {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll('#user-table-container tbody tr');
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                }
+                
+                if (e.target && e.target.id === 'payment-search') {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll('#payment-table-container tbody tr');
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

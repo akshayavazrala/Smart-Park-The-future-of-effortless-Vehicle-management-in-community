@@ -1,0 +1,977 @@
+<!-- services.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark - Service Centers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #93c5fd;
+            --secondary-color: #10b981;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gray-color: #94a3b8;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        .header {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo img {
+            height: 2.5rem;
+            width: auto;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+        
+        .logo-tagline {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: var(--gray-color);
+            letter-spacing: 0.5px;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background-color: white;
+            padding: 0 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-item > a {
+            display: block;
+            padding: 1.25rem 1.5rem;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-item.active > a {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .nav-item.active > a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .date-display {
+            font-size: 0.95rem;
+            color: var(--gray-color);
+        }
+        
+        /* Fuel Dashboard */
+        .fuel-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .fuel-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Fuel Card */
+        .fuel-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .fuel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fuel-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .fuel-type {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .fuel-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+        
+        .petrol {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        
+        .diesel {
+            background: linear-gradient(135deg, #10b981, #047857);
+        }
+        
+        .cng {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .fuel-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .fuel-price {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .price-up {
+            background-color: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+        }
+        
+        .price-down {
+            background-color: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+        }
+        
+        .price-neutral {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+        }
+        
+        .fuel-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        /* Fuel Trends */
+        .trends-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .trend-chart {
+            height: 300px;
+            background-color: #f8fafc;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNDgsIDI1MCwgMjUyLCAxKSI+PC9yZWN0PjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgeD0iMjAiIHk9IjIwIiBmaWxsPSJyZ2JhKDI0OCwgMjUwLCAyNTIsIDEpIj48L3JlY3Q+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIj48L3JlY3Q+PC9zdmc+');
+        }
+        
+        /* Fuel Stations */
+        .stations-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .stations-list {
+            margin-top: 1rem;
+        }
+        
+        .station-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .station-item:last-child {
+            border-bottom: none;
+        }
+        
+        .station-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .station-info {
+            flex: 1;
+        }
+        
+        .station-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .station-location {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        .station-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+        
+        .chat-btn {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .chat-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+        
+        .chat-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .chat-container {
+            position: absolute;
+            bottom: 4.5rem;
+            right: 0;
+            width: 350px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .chat-container.open {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-title {
+            font-weight: 500;
+        }
+        
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        
+        .chat-body {
+            padding: 1rem;
+            height: 300px;
+            overflow-y: auto;
+        }
+        
+        .chat-message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .bot-message {
+            background-color: #f1f5f9;
+            border-top-left-radius: 0;
+            margin-right: auto;
+        }
+        
+        .user-message {
+            background-color: var(--primary-light);
+            border-top-right-radius: 0;
+            margin-left: auto;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 0.75rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        
+        .chat-input button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        /* Service center styles */
+        .service-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .service-badge {
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--border-radius);
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .service-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--gray-color);
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .service-features {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary-color);
+            padding: 0.35rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--warning-color);
+        }
+
+        /* Notification Button */
+        .notification-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .notification-btn:hover {
+            color: var(--warning-color);
+        }
+
+        .notification-btn.active {
+            color: var(--warning-color);
+        }
+
+        /* Notification Modal */
+        .notification-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .notification-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 400px;
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transform: translateY(-20px);
+            transition: var(--transition);
+        }
+
+        .notification-modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray-color);
+            color: var(--dark-color);
+        }
+
+        .btn-outline:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        @media (max-width: 768px) {
+            .service-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .service-meta {
+                gap: 0.75rem;
+            }
+        }
+
+        /* Community Info */
+        .community-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-color);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo">
+            <img src="logo.jpg" alt="SmartPark Logo">
+            <div class="logo-text">
+                <span class="logo-name">SmartPark</span>
+                <span class="logo-tagline">EFFORTLESS VEHICLE MANAGEMENT</span>
+            </div>
+        </div>
+        
+        <div class="nav-controls">
+            <a href="#" class="nav-link">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-envelope"></i>
+                <span>Contact</span>
+            </a>
+            
+            <div class="profile">
+                <button class="profile-btn">
+                    <div class="profile-img" id="profileInitials"></div>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Navigation -->
+    <nav class="navbar">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="user_dashboard.html">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="vehicle_registration.html">Vehicle Registration</a>
+            </li>
+            <li class="nav-item">
+                <a href="parking_slot.html">Parking Management</a>
+            </li>
+            <li class="nav-item active">
+                <a href="fuel_updates.html">Fuel Updates</a>
+            </li>
+            <li class="nav-item">
+                <a href="services.html">Service</a>
+            </li>
+            <li class="nav-item">
+                <a href="notification_alerts.html">Notifications</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1 class="page-title">Approved Service Centers</h1>
+            <div class="date-display">Friday, April 22, 2025</div>
+        </div>
+
+        <div class="community-info">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>My Home Bhooja</span>
+        </div>
+
+        <div class="services-container">
+            <div class="service-card">
+                <button class="notification-btn" data-service="Green Valley Auto Care">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="service-header">
+                    <div class="service-badge">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <span class="station-distance">1.0 km</span>
+                </div>
+                <h3 class="station-name">Green Valley Auto Care</h3>
+                <div class="service-meta">
+                    <span><i class="fas fa-clock"></i> 8 AM - 8 PM</span>
+                    <span><i class="fas fa-phone"></i> 040-34567890</span>
+                    <span class="rating">
+                        <i class="fas fa-star"></i> 4.8/5
+                    </span>
+                </div>
+                <div class="service-features">
+                    <span class="feature-tag">Free Pickup/Drop</span>
+                    <span class="feature-tag">Genuine Parts</span>
+                    <span class="feature-tag">24/7 Support</span>
+                </div>
+            </div>
+
+            <div class="service-card">
+                <button class="notification-btn" data-service="Hyundai Authorized Service">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="service-header">
+                    <div class="service-badge">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <span class="station-distance">1.5 km</span>
+                </div>
+                <h3 class="station-name">Hyundai Authorized Service</h3>
+                <div class="service-meta">
+                    <span><i class="fas fa-clock"></i> 9 AM - 7 PM</span>
+                    <span><i class="fas fa-phone"></i> 040-45678901</span>
+                    <span class="rating">
+                        <i class="fas fa-star"></i> 4.5/5
+                    </span>
+                </div>
+                <div class="service-features">
+                    <span class="feature-tag">Free Diagnostics</span>
+                    <span class="feature-tag">Roadside Assistance</span>
+                    <span class="feature-tag">Insurance Support</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Modal -->
+    <div class="notification-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Set Service Reminder</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="reminder-form">
+                <div class="form-group">
+                    <label for="service-center" class="form-label">Service Center</label>
+                    <input type="text" id="service-center" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="reminder-date" class="form-label">Reminder Date</label>
+                    <input type="date" id="reminder-date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="reminder-time" class="form-label">Reminder Time</label>
+                    <input type="time" id="reminder-time" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicle-select" class="form-label">Vehicle</label>
+                    <select id="vehicle-select" class="form-control" required>
+                        <option value="">Select Vehicle</option>
+                        <option value="Toyota Camry - ABC-1234">Toyota Camry - ABC-1234</option>
+                        <option value="Honda Civic - XYZ-5678">Honda Civic - XYZ-5678</option>
+                        <option value="Tesla Model 3 - EV-2023">Tesla Model 3 - EV-2023</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="service-type" class="form-label">Service Type</label>
+                    <select id="service-type" class="form-control" required>
+                        <option value="">Select Service Type</option>
+                        <option value="Oil Change">Oil Change</option>
+                        <option value="Tire Rotation">Tire Rotation</option>
+                        <option value="Brake Inspection">Brake Inspection</option>
+                        <option value="Battery Check">Battery Check</option>
+                        <option value="Full Service">Full Service</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline modal-close">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Set Reminder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button class="chat-btn">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-title">SmartPark Support</div>
+                <button class="chat-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-body">
+                <div class="chat-message bot-message">
+                    Hello! How can I help you with your vehicle service today?
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message...">
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chat Widget Toggle
+        const chatBtn = document.querySelector('.chat-btn');
+        const chatContainer = document.querySelector('.chat-container');
+        
+        chatBtn.addEventListener('click', () => {
+            chatContainer.classList.toggle('open');
+        });
+        
+        document.querySelector('.chat-close').addEventListener('click', () => {
+            chatContainer.classList.remove('open');
+        });
+
+        // Notification Modal
+        const notificationBtns = document.querySelectorAll('.notification-btn');
+        const notificationModal = document.querySelector('.notification-modal');
+        const modalCloseBtns = document.querySelectorAll('.modal-close');
+        const serviceCenterInput = document.getElementById('service-center');
+        const reminderForm = document.getElementById('reminder-form');
+        
+        notificationBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const serviceName = btn.getAttribute('data-service');
+                serviceCenterInput.value = serviceName;
+                notificationModal.classList.add('active');
+                
+                // Set default date to tomorrow
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                document.getElementById('reminder-date').valueAsDate = tomorrow;
+                
+                // Set default time to 9 AM
+                document.getElementById('reminder-time').value = '09:00';
+            });
+        });
+        
+        modalCloseBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                notificationModal.classList.remove('active');
+            });
+        });
+        
+        // Close modal when clicking outside
+        notificationModal.addEventListener('click', (e) => {
+            if (e.target === notificationModal) {
+                notificationModal.classList.remove('active');
+            }
+        });
+        
+        // Form submission
+        reminderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const serviceCenter = serviceCenterInput.value;
+            const date = document.getElementById('reminder-date').value;
+            const time = document.getElementById('reminder-time').value;
+            const vehicle = document.getElementById('vehicle-select').value;
+            const serviceType = document.getElementById('service-type').value;
+            
+            // Format the date for display
+            const formattedDate = new Date(`${date}T${time}`).toLocaleString();
+            
+            // Find the button that opened this modal and mark it as active
+            notificationBtns.forEach(btn => {
+                if (btn.getAttribute('data-service') === serviceCenter) {
+                    btn.classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-bell-slash"></i>';
+                }
+            });
+            
+            // Show confirmation (in a real app, you would save this to a database)
+            alert(`Reminder set for ${serviceType} at ${serviceCenter} for ${vehicle} on ${formattedDate}`);
+            
+            // Close the modal
+            notificationModal.classList.remove('active');
+        });
+
+        // Same community coordinates as fuel page
+        const SERVICE_CENTERS = [
+            {
+                name: "Green Valley Auto Care",
+                lat: 17.5058,
+                lng: 78.3962,
+                distance: 0.3 // pre-calculated km
+            },
+            {
+                name: "Hyundai Authorized Service",
+                lat: 17.5045,
+                lng: 78.3925,
+                distance: 0.9
+            }
+        ];
+    </script>
+</body>
+</html>

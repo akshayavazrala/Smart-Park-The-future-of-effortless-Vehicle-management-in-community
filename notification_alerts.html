@@ -3,129 +3,581 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark</title>
+    <title>SmartPark - My Vehicles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            text-align: center;
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
         }
-
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
         .header {
-            background-color: #004899;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 15px 20px;
+            padding: 1rem 2rem;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
         .header img {
-            height: 40px;
-            margin-right: 10px;
+            height: 2.5rem;
         }
-
+        
         .header h1 {
-            font-size: 24px;
+            font-size: 1.5rem;
+            font-weight: 600;
             margin: 0;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             font-weight: bold;
         }
-
+        
         .container {
-            background: white;
-            width: 60%;
-            margin: 50px auto;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
-
-        .container h2 {
-            color: #004899;
-            font-size: 28px;
+        
+        .dashboard-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
-
+        
+        .dashboard-title i {
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
         .alert {
-            background-color: #ffc107;
-            color: #333;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            font-size: 18px;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: all 0.3s ease;
         }
-
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background: white;
+        
+        .alert:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
+        
+        .alert-warning {
+            background-color: #fffbeb;
+            color: #92400e;
+            border-left: 4px solid var(--warning);
         }
-
-        th {
-            background-color: #004899;
+        
+        .alert-danger {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .alert-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border-left: 4px solid var(--success);
+        }
+        
+        .alert-info {
+            background-color: #eff6ff;
+            color: #1e40af;
+            border-left: 4px solid var(--info);
+        }
+        
+        .alert-icon {
+            font-size: 1.5rem;
+            margin-top: 0.25rem;
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .alert-message {
+            font-size: 0.9375rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-date {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .alert-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
             color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--dark);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--gray-light);
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+        
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .vehicle-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .vehicle-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .vehicle-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .vehicle-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: var(--gray-light);
+            color: var(--dark);
+        }
+        
+        .vehicle-details {
+            margin: 1rem 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .detail-label {
+            color: var(--gray);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .no-alerts {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+        
+        .no-alerts i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--gray-light);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--gray-light);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
         }
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-brand">
+            <img src="logo.jpg" alt="SmartPark Logo">
+            <h1>SmartPark</h1>
+        </div>
+        <div class="user-menu">
+            <div class="profile-img" id="profileInitials"></div>
+        </div>
+    </header>
 
-    <div class="header">
-        <img src="logo.png" alt="Logo">
-        <h1>SmartPark</h1>
-    </div>
-
-    <h2>Notifications & Alerts</h2>
-    <div id="alerts-container"></div>
-
-    <h2>Parking Slot Information</h2>
-    <table>
-        <tr>
-            <th>Slot Number</th>
-            <th>Status</th>
-            <th>Vehicle Type</th>
-            <th>Last Occupied</th>
-        </tr>
-        <tr>
-            <td>101</td>
-            <td style="background-color: #28a745; color: white;">Available</td>
-            <td>Car</td>
-            <td>2 days ago</td>
-        </tr>
-        <tr>
-            <td>102</td>
-            <td style="background-color: #dc3545; color: white;">Occupied</td>
-            <td>Motorcycle</td>
-            <td>Today</td>
-        </tr>
-        <tr>
-            <td>103</td>
-            <td style="background-color: #ffc107; color: black;">Reserved</td>
-            <td>Electric Vehicle</td>
-            <td>Yesterday</td>
-        </tr>
-    </table>
+    <main class="container">
+        <h1 class="dashboard-title">
+            <i class="fas fa-car"></i> My Vehicle Dashboard
+        </h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Vehicle Alerts</h2>
+                <button class="btn btn-outline btn-sm">
+                    <i class="fas fa-bell-slash"></i> Mute All
+                </button>
+            </div>
+            
+            <div id="alerts-container">
+                <div class="alert alert-danger">
+                    <div class="alert-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">
+                            <i class="fas fa-file-contract"></i> Insurance Expiring Soon
+                        </div>
+                        <div class="alert-message">
+                            Your vehicle (Toyota Camry) insurance will expire in 7 days. Renew now to avoid penalties.
+                        </div>
+                        <div class="alert-date">
+                            Alert generated: Today, 10:30 AM
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-sync-alt"></i> Renew Now
+                            </button>
+                            <button class="btn btn-outline btn-sm">
+                                Remind Me Later
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <div class="alert-icon">
+                        <i class="fas fa-oil-can"></i>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">
+                            <i class="fas fa-tools"></i> Maintenance Due
+                        </div>
+                        <div class="alert-message">
+                            Your Honda Civic is due for an oil change. Recommended service after 5,000 km.
+                        </div>
+                        <div class="alert-date">
+                            Alert generated: Yesterday, 3:45 PM
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-calendar-alt"></i> Schedule Service
+                            </button>
+                            <button class="btn btn-outline btn-sm">
+                                Dismiss
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <div class="alert-icon">
+                        <i class="fas fa-battery-three-quarters"></i>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">
+                            <i class="fas fa-charging-station"></i> Tire Rotation Recommended
+                        </div>
+                        <div class="alert-message">
+                            Time to rotate tires on your Tesla Model 3 for even wear and longer tire life.
+                        </div>
+                        <div class="alert-date">
+                            Alert generated: 2 days ago
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-info-circle"></i> Learn More
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">My Vehicles</h2>
+                <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Add Vehicle
+                </button>
+            </div>
+            
+            <div class="vehicles-grid">
+                <div class="vehicle-card">
+                    <div class="vehicle-header">
+                        <h3 class="vehicle-name">Toyota Camry</h3>
+                        <span class="vehicle-type">Sedan</span>
+                    </div>
+                    <div class="vehicle-details">
+                        <div class="detail-row">
+                            <span class="detail-label">License Plate:</span>
+                            <span class="detail-value">ABC-1234</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Insurance:</span>
+                            <span class="detail-value" style="color: var(--danger);">Expires in 7 days</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Last Service:</span>
+                            <span class="detail-value">3 months ago</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%;">
+                        <i class="fas fa-ellipsis-h"></i> Manage
+                    </button>
+                </div>
+                
+                <div class="vehicle-card">
+                    <div class="vehicle-header">
+                        <h3 class="vehicle-name">Honda Civic</h3>
+                        <span class="vehicle-type">Compact</span>
+                    </div>
+                    <div class="vehicle-details">
+                        <div class="detail-row">
+                            <span class="detail-label">License Plate:</span>
+                            <span class="detail-value">XYZ-5678</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Insurance:</span>
+                            <span class="detail-value">Valid until 12/15/2023</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Last Service:</span>
+                            <span class="detail-value" style="color: var(--warning);">Due now</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%;">
+                        <i class="fas fa-ellipsis-h"></i> Manage
+                    </button>
+                </div>
+                
+                <div class="vehicle-card">
+                    <div class="vehicle-header">
+                        <h3 class="vehicle-name">Tesla Model 3</h3>
+                        <span class="vehicle-type">Electric</span>
+                    </div>
+                    <div class="vehicle-details">
+                        <div class="detail-row">
+                            <span class="detail-label">License Plate:</span>
+                            <span class="detail-value">EV-2023</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Insurance:</span>
+                            <span class="detail-value">Valid until 06/30/2024</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Last Service:</span>
+                            <span class="detail-value">1 month ago</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%;">
+                        <i class="fas fa-ellipsis-h"></i> Manage
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let alerts = JSON.parse(localStorage.getItem("vehicleAlerts")) || [
-                { message: "Oil change due on 25th March." },
-                { message: "Insurance expiring on 5th April! Renew soon." },
-                { message: "Tire rotation recommended after 1000 km." }
-            ];
-
-            let alertsContainer = document.getElementById("alerts-container");
-            alerts.forEach(alert => {
-                let div = document.createElement("div");
-                div.className = "alert";
-                div.innerText = alert.message;
-                alertsContainer.appendChild(div);
+            // Simulate adding a new alert (e.g., for demo purposes)
+            setTimeout(() => {
+                const alertsContainer = document.getElementById('alerts-container');
+                const newAlert = document.createElement('div');
+                newAlert.className = 'alert alert-success';
+                newAlert.innerHTML = `
+                    <div class="alert-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">
+                            <i class="fas fa-calendar-check"></i> Inspection Reminder
+                        </div>
+                        <div class="alert-message">
+                            Your vehicle (Honda Civic) annual inspection is coming up in 14 days.
+                        </div>
+                        <div class="alert-date">
+                            Alert generated: Just now
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-calendar-plus"></i> Schedule
+                            </button>
+                            <button class="btn btn-outline btn-sm dismiss-btn">
+                                Dismiss
+                            </button>
+                        </div>
+                    </div>
+                `;
+                alertsContainer.prepend(newAlert);
+                
+                // Add click handler to new dismiss button
+                newAlert.querySelector('.dismiss-btn').addEventListener('click', function() {
+                    this.closest('.alert').style.opacity = '0';
+                    setTimeout(() => {
+                        this.closest('.alert').remove();
+                    }, 300);
+                });
+            }, 3000);
+            
+            // Add dismiss functionality to all alerts
+            document.querySelectorAll('.alert .btn-outline:not(.dismiss-btn)').forEach(button => {
+                if(button.textContent.includes('Dismiss') || button.textContent.includes('Later')) {
+                    button.addEventListener('click', function() {
+                        this.closest('.alert').style.opacity = '0';
+                        setTimeout(() => {
+                            this.closest('.alert').remove();
+                        }, 300);
+                    });
+                }
             });
         });
     </script>

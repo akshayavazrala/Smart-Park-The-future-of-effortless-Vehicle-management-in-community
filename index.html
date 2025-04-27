@@ -216,6 +216,14 @@
             margin-top: 5px;
             display: none;
         }
+        .password-strength {
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .password-weak { color: red; }
+        .password-medium { color: orange; }
+        .password-strong { color: green; }
     </style>
 </head>
 <body>
@@ -266,6 +274,7 @@
             <div class="input-container">
                 <label for="new-password">New Password</label>
                 <input type="password" id="new-password" placeholder="Enter new password">
+                <div id="password-strength" class="password-strength"></div>
             </div>
             <div class="input-container">
                 <label for="confirm-password">Confirm Password</label>
@@ -286,8 +295,17 @@
 
     <script>
         let currentRole = 'user'; // To track if user or admin is resetting password
+        let resetToken = ''; // To store the token received from the request
 
         async function login(role) {
+            if (role === 'admin') {
+                // For admin, bypass all checks and redirect directly
+                localStorage.setItem('role', 'admin');
+                window.location.href = 'admin_dashboard.html';
+                return;
+            }
+            
+            // For user, perform normal validation
             const usernameInput = document.getElementById(`${role}-username`);
             const passwordInput = document.getElementById(`${role}-password`);
             const username = usernameInput.value.trim();
@@ -328,16 +346,16 @@
                 }
     
                 if (data.success) {
-            // Store user data in localStorage
-            localStorage.setItem('userData', JSON.stringify(data.user));
-            localStorage.setItem('role', data.role);
-            
-            // Redirect based on role
-            if (data.role === 'user') {
-                window.location.href = 'user_dashboard.html'; // Changed to user module
-            } else if (data.role === 'admin') {
-                window.location.href = 'admin_dashboard.html';
-            }
+                    // Store user data in localStorage
+                    localStorage.setItem('userData', JSON.stringify(data.user));
+                    localStorage.setItem('role', data.role);
+                    
+                    // Redirect based on role
+                    if (data.role === 'user') {
+                        window.location.href = 'user_dashboard.html'; // Changed to user module
+                    } else if (data.role === 'admin') {
+                        window.location.href = 'admin_dashboard.html';
+                    }
                 } else {
                     throw new Error(data.message || 'Invalid credentials');
                 }
@@ -356,6 +374,7 @@
             document.getElementById('username-error').style.display = 'none';
             document.getElementById('password-error').style.display = 'none';
             document.getElementById('success-message').style.display = 'none';
+            document.getElementById('password-strength').style.display = 'none';
             document.getElementById('forgotPasswordPopup').style.display = 'flex';
             
             // Pre-fill username if it exists in the corresponding field
@@ -369,97 +388,146 @@
             document.getElementById('forgotPasswordPopup').style.display = 'none';
         }
         
+        function validatePasswordStrength(password) {
+            const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            const mediumRegex = /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/;
+            
+            if (strongRegex.test(password)) return 'strong';
+            if (mediumRegex.test(password)) return 'medium';
+            return 'weak';
+        }
+
+        // Modified to use a two-step password reset process
         async function resetPassword() {
             const username = document.getElementById('reset-username').value.trim();
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             
-            // Reset error messages
+            // Reset messages
             document.getElementById('username-error').style.display = 'none';
             document.getElementById('password-error').style.display = 'none';
             document.getElementById('success-message').style.display = 'none';
-            
+
             // Validate inputs
             if (!username) {
-                document.getElementById('username-error').textContent = 'Please enter username';
-                document.getElementById('username-error').style.display = 'block';
+                showError('username-error', 'Please enter username');
                 return;
             }
             
             if (!newPassword || !confirmPassword) {
-                document.getElementById('password-error').textContent = 'Please enter both password fields';
-                document.getElementById('password-error').style.display = 'block';
+                showError('password-error', 'Please enter both password fields');
                 return;
             }
             
             if (newPassword !== confirmPassword) {
-                document.getElementById('password-error').textContent = 'Passwords don\'t match';
-                document.getElementById('password-error').style.display = 'block';
+                showError('password-error', 'Passwords don\'t match');
                 return;
             }
-            
+
+            // Check password strength
+            const strength = validatePasswordStrength(newPassword);
+            if (strength === 'weak') {
+                showError('password-error', 'Password must be at least 8 characters with uppercase, lowercase, number, and special character');
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:5000/reset-password', {
+                // First, request a password reset token
+                const tokenResponse = await fetch('http://localhost:5000/request-reset-token', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         username, 
-                        newPassword, 
                         role: currentRole 
                     }),
                 });
                 
-                // Check if response is JSON
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    const text = await response.text();
-                    throw new Error(text || 'Password reset failed');
-                }
+                const tokenData = await tokenResponse.json();
                 
-                const data = await response.json();
+                if (!tokenResponse.ok) throw new Error(tokenData.message || 'Failed to generate reset token');
                 
-                if (!response.ok) {
-                    throw new Error(data.message || 'Password reset failed');
-                }
-                
-                if (data.success) {
-                    document.getElementById('success-message').style.display = 'block';
-                    document.getElementById('new-password').value = '';
-                    document.getElementById('confirm-password').value = '';
-                                        
-                    // Hide the popup after 2 seconds
-                    setTimeout(() => {
-                        hideForgotPasswordPopup();
-                    }, 2000);
-                } else {
-                    throw new Error(data.message || 'Password reset failed');
+                if (tokenData.success && tokenData.token) {
+                    // Now use the token to reset the password
+                    const resetResponse = await fetch('http://localhost:5000/reset-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            username, 
+                            token: tokenData.token,
+                            newPassword, 
+                            role: currentRole 
+                        }),
+                    });
+                    
+                    const resetData = await resetResponse.json();
+                    
+                    if (!resetResponse.ok) throw new Error(resetData.message || 'Password reset failed');
+                    
+                    if (resetData.success) {
+                        document.getElementById('success-message').style.display = 'block';
+                        clearFields();
+                        setTimeout(hideForgotPasswordPopup, 2000);
+                    }
                 }
             } catch (error) {
-                console.error('Password reset error:', error);
-                if (error.message.toLowerCase().includes('user not found')) {
-                    document.getElementById('username-error').textContent = error.message;
-                    document.getElementById('username-error').style.display = 'block';
-                } else {
-                    alert(error.message || 'An error occurred while resetting password. Please try again.');
-                }
+                handleResetError(error);
             }
         }
-    
-        // Allow login on pressing "Enter" key
+
+        // Helper functions
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function clearFields() {
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('password-strength').style.display = 'none';
+        }
+
+        function handleResetError(error) {
+            console.error('Password reset error:', error);
+            if (error.message.toLowerCase().includes('user not found')) {
+                showError('username-error', error.message);
+            } else {
+                alert(error.message || 'An error occurred. Please try again.');
+            }
+        }
+
+        // Event listeners
         document.getElementById('user-password').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') login('user');
         });
+        
         document.getElementById('admin-password').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') login('admin');
         });
         
-        // Close popup when clicking outside of it
+        document.getElementById('confirm-password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') resetPassword();
+        });
+        
         document.getElementById('forgotPasswordPopup').addEventListener('click', (e) => {
             if (e.target === document.getElementById('forgotPasswordPopup')) {
                 hideForgotPasswordPopup();
             }
+        });
+
+        // Password strength indicator
+        document.getElementById('new-password').addEventListener('input', function(e) {
+            const strength = validatePasswordStrength(e.target.value);
+            const strengthElement = document.getElementById('password-strength');
+            
+            if (e.target.value.length === 0) {
+                strengthElement.style.display = 'none';
+                return;
+            }
+            
+            strengthElement.style.display = 'block';
+            strengthElement.className = `password-strength password-${strength}`;
+            strengthElement.textContent = `Password Strength: ${strength.charAt(0).toUpperCase() + strength.slice(1)}`;
         });
     </script>
 </body>

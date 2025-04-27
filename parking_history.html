@@ -3,104 +3,786 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark</title>
+    <title>Booking History | SmartPark</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            text-align: center;
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #003366;
+            --accent-color: #00a8e8;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e1e5eb;
+            --dark-gray: #6c757d;
+            --success-color: #28a745;
+            --white: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-gray);
+            color: #333;
+            line-height: 1.6;
         }
 
         .header {
-            background-color: #004899;
-            color: white;
-            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 1rem 2rem;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            font-size: 24px;
-            font-weight: bold;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .header img {
-            height: 40px;
-            margin-right: 10px;
+            height: 2.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-menu a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .user-menu a:hover {
+            opacity: 0.9;
+        }
+
+        .user-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
         .container {
-            width: 80%;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-controls select, 
+        .filter-controls input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            padding: 1rem 1.5rem;
+            background-color: var(--light-gray);
+            border-bottom: 1px solid var(--medium-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .card-body {
+            padding: 0;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: center;
+        thead {
+            background-color: var(--primary-color);
+            color: var(--white);
         }
 
         th {
-            background-color: #004899;
-            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+            position: relative;
+        }
+
+        th.sortable {
+            cursor: pointer;
+        }
+
+        th.sortable:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        th.sortable::after {
+            content: "↕";
+            margin-left: 0.5rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        th.asc::after {
+            content: "↑";
+        }
+
+        th.desc::after {
+            content: "↓";
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--medium-gray);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: rgba(0, 168, 232, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-completed {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: var(--dark-gray);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(0, 86, 179, 0.1);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .pagination button {
+            background: none;
+            border: 1px solid var(--medium-gray);
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination button:hover {
+            background-color: var(--light-gray);
+        }
+
+        .pagination button.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--medium-gray);
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .empty-state p {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(0, 86, 179, 0.1);
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .filter-controls {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="logo.png" alt="Logo">
-        <h1>SmartPark</h1>
+        <div class="logo-container">
+            <img src="logo.png" alt="SmartPark Logo">
+            <h1>SmartPark</h1>
+        </div>
+        <div class="user-menu">
+            <a href="user_dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="parking_history.html" class="active"><i class="fas fa-bookmark"></i> My Bookings</a>
+            <a href="location.html"><i class="fas fa-map-marker-alt"></i> Locations</a>
+            <div class="user-avatar" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+        </div>
     </div>
+
     <div class="container">
-        <h2>Your Previous Bookings</h2>
+        <div class="page-header">
+            <h2 class="page-title">Booking History</h2>
+            <div class="filter-controls">
+                <select id="vehicle-filter">
+                    <option value="all">All Vehicle Types</option>
+                    <option value="bike">Bike</option>
+                    <option value="car">Car</option>
+                    <option value="heavy">Truck</option>
+                </select>
+                <select id="time-filter">
+                    <option value="all">All Time</option>
+                    <option value="7">Last 7 Days</option>
+                    <option value="30">Last 30 Days</option>
+                    <option value="180">Last 6 Months</option>
+                </select>
+                <input type="text" id="search-input" placeholder="Search bookings...">
+            </div>
+        </div>
+        <!-- Add this right before the closing container div -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Payment History</h3>
+        <div>
+            <button class="btn btn-outline" id="refresh-payments-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+    </div>
+    <div class="card-body">
         <table>
             <thead>
                 <tr>
-                    <th>Slot Number</th>
-                    <th>Basement Level</th>
-                    <th>Vehicle Type</th>
-                    <th>Booking Time</th>
+                    <th class="sortable" data-sort="payment_id">Payment ID</th>
+                    <th class="sortable" data-sort="location">Location</th>
+                    <th class="sortable" data-sort="amount">Amount</th>
+                    <th class="sortable" data-sort="date">Date</th>
+                    <th class="sortable" data-sort="status">Status</th>
+                    <th class="sortable" data-sort="hours">Duration</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="history-table">
-                <!-- Booking history will be loaded here -->
+            <tbody id="payment-table">
+                <!-- Payment data will be loaded here -->
             </tbody>
         </table>
+        
+        <div class="pagination" id="payment-pagination">
+            <!-- Pagination will be loaded here -->
+        </div>
+    </div>
+</div>
+
+        <!-- Add this right before the closing container div -->
+
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let history = JSON.parse(localStorage.getItem("parkingHistory")) || [
-                { slot: "A1", basement: "B1", vehicle: "Car", time: "2024-06-25 10:00 AM" },
-                { slot: "B2", basement: "B2", vehicle: "Bike", time: "2024-06-26 11:30 AM" },
-                { slot: "C3", basement: "B3", vehicle: "Car", time: "2024-06-27 02:00 PM" }
-            ];
-            localStorage.setItem("parkingHistory", JSON.stringify(history));
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('userData');
+            if (!storedUser) {
+                window.location.href = 'index.html';
+                return;
+            }
             
-            let historyTable = document.getElementById("history-table");
+            const user = JSON.parse(storedUser);
+            document.querySelector('.user-avatar').innerHTML = `<i class="fas fa-user"></i> ${user.firstName}`;
             
-            history.forEach(entry => {
-                let row = `<tr>
-                    <td>${entry.slot}</td>
-                    <td>${entry.basement}</td>
-                    <td>${entry.vehicle}</td>
-                    <td>${entry.time}</td>
-                </tr>`;
-                historyTable.innerHTML += row;
+            // Load bookings
+            loadBookings(user.id);
+            loadPayments(user.id); // Add this line
+            // Setup event listeners
+            document.getElementById('vehicle-filter').addEventListener('change', () => loadBookings(user.id));
+            document.getElementById('time-filter').addEventListener('change', () => loadBookings(user.id)); loadPayments(user.id); // Add this line
+            document.getElementById('search-input').addEventListener('input', () => loadBookings(user.id)); loadPayments(user.id); // Add this line
+            document.getElementById('refresh-btn').addEventListener('click', () => loadBookings(user.id)); loadPayments(user.id); // Add this line
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            
+            // Sortable table headers
+            document.querySelectorAll('th.sortable').forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortField = header.dataset.sort;
+                    const isAsc = header.classList.contains('asc');
+                    const isDesc = header.classList.contains('desc');
+                    
+                    // Reset all headers
+                    document.querySelectorAll('th.sortable').forEach(h => {
+                        h.classList.remove('asc', 'desc');
+                    });
+                    
+                    // Set new sort direction
+                    if (!isAsc && !isDesc) {
+                        header.classList.add('asc');
+                    } else if (isAsc) {
+                        header.classList.remove('asc');
+                        header.classList.add('desc');
+                    } else {
+                        header.classList.remove('desc');
+                    }
+                    
+                    // Reload with new sort
+                    loadBookings(user.id);
+                });
             });
         });
+
+        const paymentData = [
+  {id: 1, user_id: 1, location: 'inorbit mall', amount: 80, date: '2025-01-02', status: 'completed', hours: '2-4 hours'},
+  {id: 2, user_id: 1, location: 'hi tech city', amount: 40, date: '2025-01-05', status: 'completed', hours: 'up to 1 hour'},
+  {id: 3, user_id: 1, location: 'nexus', amount: 120, date: '2025-01-10', status: 'completed', hours: '4-8 hours'},
+  {id: 4, user_id: 1, location: 'Birla mandir', amount: 60, date: '2025-01-15', status: 'completed', hours: '1-2 hours'},
+  {id: 5, user_id: 1, location: 'apollo hospital', amount: 150, date: '2025-01-20', status: 'completed', hours: 'all day'},
+  {id: 6, user_id: 2, location: 'Charminar', amount: 50, date: '2025-01-03', status: 'completed', hours: '1-2 hours'},
+  {id: 7, user_id: 2, location: 't- hub', amount: 90, date: '2025-01-07', status: 'completed', hours: '2-4 hours'},
+  {id: 8, user_id: 2, location: 'lulu mall', amount: 160, date: '2025-01-12', status: 'completed', hours: 'all day'},
+  {id: 9, user_id: 2, location: 'snow world', amount: 70, date: '2025-01-17', status: 'completed', hours: '1-2 hours'},
+  {id: 10, user_id: 2, location: 'inorbit mall', amount: 100, date: '2025-01-22', status: 'completed', hours: '4-8 hours'},
+  {id: 11, user_id: 3, location: 'nexus', amount: 45, date: '2025-01-04', status: 'completed', hours: 'up to 1 hour'},
+  {id: 12, user_id: 3, location: 'Birla mandir', amount: 80, date: '2025-01-08', status: 'completed', hours: '2-4 hours'},
+  {id: 13, user_id: 3, location: 'apollo hospital', amount: 140, date: '2025-01-13', status: 'completed', hours: 'all day'},
+  {id: 14, user_id: 3, location: 'Charminar', amount: 55, date: '2025-01-18', status: 'completed', hours: '1-2 hours'},
+  {id: 15, user_id: 3, location: 't- hub', amount: 110, date: '2025-01-23', status: 'completed', hours: '4-8 hours'},
+  {id: 16, user_id: 4, location: 'lulu mall', amount: 60, date: '2025-01-05', status: 'completed', hours: '1-2 hours'},
+  {id: 17, user_id: 4, location: 'snow world', amount: 85, date: '2025-01-10', status: 'completed', hours: '2-4 hours'},
+  {id: 18, user_id: 4, location: 'inorbit mall', amount: 145, date: '2025-01-15', status: 'completed', hours: 'all day'},
+  {id: 19, user_id: 4, location: 'hi tech city', amount: 50, date: '2025-01-20', status: 'completed', hours: '1-2 hours'},
+  {id: 20, user_id: 4, location: 'nexus', amount: 120, date: '2025-01-25', status: 'completed', hours: '4-8 hours'},
+  {id: 21, user_id: 5, location: 'Birla mandir', amount: 40, date: '2025-01-06', status: 'completed', hours: 'up to 1 hour'},
+  {id: 22, user_id: 5, location: 'apollo hospital', amount: 90, date: '2025-01-11', status: 'completed', hours: '2-4 hours'},
+  {id: 23, user_id: 5, location: 'Charminar', amount: 150, date: '2025-01-16', status: 'completed', hours: 'all day'},
+  {id: 24, user_id: 5, location: 't- hub', amount: 65, date: '2025-01-21', status: 'completed', hours: '1-2 hours'},
+  {id: 25, user_id: 5, location: 'lulu mall', amount: 110, date: '2025-01-26', status: 'completed', hours: '4-8 hours'},
+  {id: 26, user_id: 6, location: 'snow world', amount: 55, date: '2025-01-07', status: 'completed', hours: '1-2 hours'},
+  {id: 27, user_id: 6, location: 'inorbit mall', amount: 85, date: '2025-01-12', status: 'completed', hours: '2-4 hours'},
+  {id: 28, user_id: 6, location: 'hi tech city', amount: 140, date: '2025-01-17', status: 'completed', hours: 'all day'},
+  {id: 29, user_id: 6, location: 'nexus', amount: 60, date: '2025-01-22', status: 'completed', hours: '1-2 hours'},
+  {id: 30, user_id: 6, location: 'Birla mandir', amount: 100, date: '2025-01-27', status: 'completed', hours: '4-8 hours'},
+  {id: 31, user_id: 7, location: 'apollo hospital', amount: 45, date: '2025-01-08', status: 'completed', hours: 'up to 1 hour'},
+  {id: 32, user_id: 7, location: 'Charminar', amount: 80, date: '2025-01-13', status: 'completed', hours: '2-4 hours'},
+  {id: 33, user_id: 7, location: 't- hub', amount: 145, date: '2025-01-18', status: 'completed', hours: 'all day'},
+  {id: 34, user_id: 7, location: 'lulu mall', amount: 50, date: '2025-01-23', status: 'completed', hours: '1-2 hours'},
+  {id: 35, user_id: 7, location: 'snow world', amount: 120, date: '2025-01-28', status: 'completed', hours: '4-8 hours'},
+  {id: 36, user_id: 8, location: 'inorbit mall', amount: 60, date: '2025-01-09', status: 'completed', hours: '1-2 hours'},
+  {id: 37, user_id: 8, location: 'hi tech city', amount: 90, date: '2025-01-14', status: 'completed', hours: '2-4 hours'},
+  {id: 38, user_id: 8, location: 'nexus', amount: 150, date: '2025-01-19', status: 'completed', hours: 'all day'},
+  {id: 39, user_id: 8, location: 'Birla mandir', amount: 65, date: '2025-01-24', status: 'completed', hours: '1-2 hours'},
+  {id: 40, user_id: 8, location: 'apollo hospital', amount: 110, date: '2025-01-29', status: 'completed', hours: '4-8 hours'},
+  {id: 41, user_id: 9, location: 'Charminar', amount: 40, date: '2025-01-10', status: 'completed', hours: 'up to 1 hour'},
+  {id: 42, user_id: 9, location: 't- hub', amount: 85, date: '2025-01-15', status: 'completed', hours: '2-4 hours'},
+  {id: 43, user_id: 9, location: 'lulu mall', amount: 140, date: '2025-01-20', status: 'completed', hours: 'all day'},
+  {id: 44, user_id: 9, location: 'snow world', amount: 55, date: '2025-01-25', status: 'completed', hours: '1-2 hours'},
+  {id: 45, user_id: 9, location: 'inorbit mall', amount: 100, date: '2025-01-30', status: 'completed', hours: '4-8 hours'},
+  {id: 46, user_id: 10, location: 'hi tech city', amount: 50, date: '2025-01-11', status: 'completed', hours: '1-2 hours'},
+  {id: 47, user_id: 10, location: 'nexus', amount: 90, date: '2025-01-16', status: 'completed', hours: '2-4 hours'},
+  {id: 48, user_id: 10, location: 'Birla mandir', amount: 145, date: '2025-01-21', status: 'completed', hours: 'all day'},
+  {id: 49, user_id: 10, location: 'apollo hospital', amount: 60, date: '2025-01-26', status: 'completed', hours: '1-2 hours'},
+  {id: 50, user_id: 10, location: 'Charminar', amount: 120, date: '2025-01-31', status: 'completed', hours: '4-8 hours'}
+];
+        
+        // In parking_history.html, update the loadBookings function:
+async function loadBookings(userId) {
+  const vehicleFilter = document.getElementById('vehicle-filter').value;
+  const timeFilter = document.getElementById('time-filter').value;
+  const searchQuery = document.getElementById('search-input').value;
+  
+  try {
+    let url = `http://localhost:5000/get-booking-history/${userId}`;
+    const params = new URLSearchParams();
+    
+    if (vehicleFilter !== 'all') params.append('vehicleType', vehicleFilter);
+    if (timeFilter !== 'all') params.append('days', timeFilter);
+    if (searchQuery) params.append('search', searchQuery);
+    
+    if (params.toString()) url += `?${params.toString()}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.success) {
+      displayBookings(data.bookings);
+    } else {
+      throw new Error(data.message || 'Failed to load bookings');
+    }
+  } catch (error) {
+    console.error('Error loading bookings:', error);
+    document.getElementById('history-table').innerHTML = `
+      <tr>
+        <td colspan="7" class="empty-state">
+          <i class="fas fa-exclamation-circle"></i>
+          <h3>Error loading bookings</h3>
+          <p>${error.message}</p>
+        </td>
+      </tr>
+    `;
+  }
+}
+        
+function displayBookings(bookings) {
+  const tableBody = document.getElementById('history-table');
+  
+  if (bookings.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty-state">
+          <i class="fas fa-calendar-times"></i>
+          <h3>No bookings found</h3>
+          <p>You haven't made any parking bookings yet.</p>
+          <a href="parking.html" class="btn">Book a Parking Spot</a>
+        </td>
+      </tr>
+    `;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+  
+  tableBody.innerHTML = bookings.map(booking => {
+    const bookingTime = new Date(booking.bookingTime);
+    const formattedTime = bookingTime.toLocaleDateString() + ' • ' + 
+                         bookingTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    const statusClass = booking.status === 'completed' ? 'status-completed' : 
+                       booking.status === 'cancelled' ? 'status-cancelled' : 'status-active';
+    const statusText = booking.status.charAt(0).toUpperCase() + booking.status.slice(1);
+    
+    const vehicleIcon = booking.vehicleType === 'bike' ? 'fas fa-motorcycle' :
+                       booking.vehicleType === 'car' ? 'fas fa-car' : 'fas fa-truck';
+    const vehicleText = booking.vehicleType.charAt(0).toUpperCase() + booking.vehicleType.slice(1);
+    
+    return `
+      <tr>
+        <td>${booking.bookingId}</td>
+        <td>
+          <strong>${booking.location}</strong><br>
+          <small>${booking.address || 'N/A'}</small>
+        </td>
+        <td>${booking.slot}</td>
+        <td><i class="${vehicleIcon}"></i> ${vehicleText}</td>
+        <td>${formattedTime}</td>
+        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td>
+          <button class="action-btn" title="View details" onclick="viewBookingDetails('${booking.bookingId}')">
+            <i class="fas fa-eye"></i>
+          </button>
+          ${booking.status === 'completed' || booking.status === 'cancelled' ? '' : `
+          <button class="action-btn" title="Cancel booking" onclick="cancelBooking('${booking.bookingId}')">
+            <i class="fas fa-times"></i>
+          </button>
+          `}
+          <button class="action-btn" title="View location" onclick="viewLocation('${booking.locationId || ''}')">
+            <i class="fas fa-map-marker-alt"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+  
+  updatePagination();
+}
+        
+        function updatePagination() {
+            // In a real app, implement proper pagination with server-side support
+            document.getElementById('pagination').innerHTML = `
+                <button disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="active">1</button>
+                <button><i class="fas fa-chevron-right"></i></button>
+            `;
+        }
+        
+        function viewBookingDetails(bookingId) {
+            alert(`Viewing details for booking ${bookingId}\nIn a real app, this would show detailed information.`);
+        }
+        
+        function viewLocation(locationId) {
+            localStorage.setItem('selectedLocation', locationId);
+            window.location.href = 'location.html';
+        }
+        
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch('http://localhost:5000/complete-booking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bookingId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Booking cancelled successfully');
+                        // Reload bookings
+                        const user = JSON.parse(localStorage.getItem('userData'));
+                        loadBookings(user.id);
+                    } else {
+                        throw new Error(data.message || 'Cancellation failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Cancellation failed: ' + error.message);
+                });
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('userData');
+            localStorage.removeItem('role');
+            window.location.href = 'index.html';
+        }
+
+        // Add these functions before the closing script tag
+
+// Function to load payment history
+async function loadPayments(userId) {
+    const timeFilter = document.getElementById('time-filter').value;
+    const searchQuery = document.getElementById('search-input').value;
+    
+    try {
+        // In a real app, this would be an API call
+        // For demo purposes, we'll filter the payment data directly
+        const filteredPayments = paymentData.filter(payment => {
+            if (payment.user_id !== userId) return false;
+            
+            // Apply search filter if any
+            if (searchQuery && !payment.location.toLowerCase().includes(searchQuery.toLowerCase())) {
+                return false;
+            }
+            
+            // Apply time filter if any
+            if (timeFilter !== 'all') {
+                const daysAgo = parseInt(timeFilter);
+                const paymentDate = new Date(payment.date);
+                const today = new Date();
+                const diffTime = Math.abs(today - paymentDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays > daysAgo) return false;
+            }
+            
+            return true;
+        });
+        
+        displayPayments(filteredPayments);
+    } catch (error) {
+        console.error('Error loading payments:', error);
+        document.getElementById('payment-table').innerHTML = `
+            <tr>
+                <td colspan="7" class="empty-state">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Error loading payment history</h3>
+                    <p>${error.message || 'An unknown error occurred'}</p>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// Function to display payments
+function displayPayments(payments) {
+    const tableBody = document.getElementById('payment-table');
+    
+    if (payments.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty-state">
+                    <i class="fas fa-receipt"></i>
+                    <h3>No payment records found</h3>
+                    <p>No payment history available for the selected period.</p>
+                </td>
+            </tr>
+        `;
+        document.getElementById('payment-pagination').innerHTML = '';
+        return;
+    }
+    
+    tableBody.innerHTML = payments.map(payment => {
+        const paymentDate = new Date(payment.date);
+        const formattedDate = paymentDate.toLocaleDateString();
+        
+        return `
+            <tr>
+                <td>${payment.id}</td>
+                <td><strong>${payment.location}</strong></td>
+                <td>₹${payment.amount}</td>
+                <td>${formattedDate}</td>
+                <td><span class="status-badge status-${payment.status}">${payment.status}</span></td>
+                <td>${payment.hours}</td>
+                <td>
+                    <button class="action-btn" title="View receipt" onclick="viewReceipt(${payment.id})">
+                        <i class="fas fa-file-invoice"></i>
+                    </button>
+                    <button class="action-btn" title="Download invoice" onclick="downloadInvoice(${payment.id})">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+    
+    updatePaymentPagination();
+}
+
+// Function to update payment pagination
+function updatePaymentPagination() {
+    // In a real app, implement proper pagination with server-side support
+    document.getElementById('payment-pagination').innerHTML = `
+        <button disabled><i class="fas fa-chevron-left"></i></button>
+        <button class="active">1</button>
+        <button><i class="fas fa-chevron-right"></i></button>
+    `;
+}
+
+// Helper functions for payment actions
+function viewReceipt(paymentId) {
+    alert(`Viewing receipt for payment ${paymentId}\nIn a real app, this would show the receipt details.`);
+}
+
+function downloadInvoice(paymentId) {
+    alert(`Downloading invoice for payment ${paymentId}\nIn a real app, this would download a PDF invoice.`);
+}
     </script>
 </body>
 </html>

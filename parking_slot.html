@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark - Complete Parking Solution</title>
+    <title>SmartPark - Book Parking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
             --primary-color: #004899;
@@ -14,7 +15,6 @@
             --reserved-color: #ffc107;
             --processing-color: #17a2b8;
             --success-color: #28a745;
-            --warning-color: #ffc107;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
@@ -57,6 +57,11 @@
             font-weight: 600;
         }
 
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
         .nav-links a {
             color: white;
             text-decoration: none;
@@ -67,6 +72,20 @@
 
         .nav-links a:hover {
             opacity: 0.8;
+        }
+
+        .profile-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 20px;
+            cursor: pointer;
         }
 
         .main-container {
@@ -211,6 +230,18 @@
             cursor: not-allowed;
         }
 
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-text {
+            background: transparent;
+            color: var(--primary-color);
+            border: none;
+        }
+
         .parking-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -301,6 +332,82 @@
             font-weight: 500;
         }
 
+        /* Confirmation Styles */
+        .confirmation-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .confirmation-header {
+            margin-bottom: 2rem;
+        }
+
+        .confirmation-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-icon.success {
+            color: #28a745;
+        }
+
+        .confirmation-subtitle {
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .confirmation-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row.highlight {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1.5rem;
+        }
+
+        .detail-label {
+            flex: 1;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .detail-value {
+            flex: 2;
+            color: #212529;
+            text-align: right;
+        }
+
+        .confirmation-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -321,8 +428,6 @@
             width: 90%;
             max-width: 500px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .modal-header {
@@ -354,87 +459,6 @@
             gap: 1rem;
         }
 
-        .secondary-btn {
-            background-color: #6c757d;
-        }
-
-        .secondary-btn:hover {
-            background-color: #5a6268;
-        }
-
-        .payment-methods {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .payment-method {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .payment-method:hover {
-            border-color: var(--primary-color);
-        }
-
-        .payment-method.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(0, 72, 153, 0.05);
-        }
-
-        .payment-method img {
-            width: 40px;
-            margin-right: 1rem;
-        }
-
-        .payment-details {
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .payment-details.active {
-            display: block;
-        }
-
-        .confirmation {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .confirmation-icon {
-            font-size: 4rem;
-            color: var(--success-color);
-            margin-bottom: 1rem;
-        }
-
-        .confirmation h3 {
-            color: var(--success-color);
-            margin-bottom: 1rem;
-        }
-
-        .confirmation-details {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-radius: 4px;
-            margin-top: 1rem;
-            text-align: left;
-        }
-
-        .confirmation-details p {
-            margin-bottom: 0.5rem;
-        }
-
-        .confirmation-details strong {
-            display: inline-block;
-            width: 120px;
-        }
-
         @media (max-width: 768px) {
             .parking-grid {
                 grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
@@ -451,7 +475,77 @@
             .step-label {
                 font-size: 0.8rem;
             }
+
+            .confirmation-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .confirmation-actions button {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
         }
+
+        .payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.payment-method:hover {
+    border-color: var(--primary-color);
+    background-color: #f8f9fa;
+}
+
+.payment-method.selected {
+    border-color: var(--primary-color);
+    background-color: rgba(0, 72, 153, 0.05);
+}
+
+.payment-method img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-right: 1rem;
+}
+
+.payment-method div {
+    flex: 1;
+}
+
+.payment-method h4 {
+    margin-bottom: 0.25rem;
+    color: #333;
+}
+
+.payment-method p {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.payment-details {
+    display: none;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.payment-details.active {
+    display: block;
+}
     </style>
 </head>
 <body>
@@ -462,9 +556,9 @@
         </div>
         <nav class="nav-links">
             <a href="user_dashboard.html">Home</a>
-            <a href="location.html">Locations</a>
             <a href="location_pricing.html">Pricing</a>
-            <a href="#">Contact</a>
+            <a href="parking_history.html">My Bookings</a>
+            <div class="profile-img" id="profileInitials"></div>
         </nav>
     </header>
 
@@ -494,17 +588,17 @@
             <div class="form-group">
                 <div class="form-control">
                     <label for="from-location">From (Current Location)</label>
-                    <input type="text" id="from-location" placeholder="Enter your current location">
+                    <input type="text" id="from-location" value="My Home Bhooja" readonly>
                 </div>
                 <div class="form-control">
                     <label for="to-location">Destination</label>
-                    <input type="text" id="to-location" placeholder="Enter your destination">
+                    <input type="text" id="to-location" placeholder="Enter your destination" required>
                 </div>
             </div>
             <div class="form-group">
                 <div class="form-control">
                     <label for="vehicle-type">Vehicle Type</label>
-                    <select id="vehicle-type">
+                    <select id="vehicle-type" required>
                         <option value="">Select vehicle type</option>
                         <option value="bike">Motorcycle/Scooter</option>
                         <option value="car">Car/SUV</option>
@@ -523,7 +617,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 1.5rem;">
-                <button id="find-parking-btn" onclick="nextStep(2)">Find Parking</button>
+                <button id="find-parking-btn">Find Parking</button>
             </div>
         </section>
 
@@ -590,7 +684,7 @@
                 <p><strong>Vehicle Type:</strong> <span id="payment-vehicle"></span></p>
                 <p><strong>Duration:</strong> <span id="payment-duration"></span></p>
                 <p><strong>Arrival Time:</strong> <span id="payment-time"></span></p>
-                <p><strong>Total Amount:</strong> $<span id="payment-amount"></span></p>
+                <p><strong>Total Amount:</strong> ₹<span id="payment-amount"></span></p>
             </div>
 
             <h3 style="margin: 1.5rem 0 1rem;">Select Payment Method</h3>
@@ -660,25 +754,31 @@
 
         <!-- Step 4: Confirmation -->
         <section class="form-section" id="confirmation-section">
-            <div class="confirmation">
-                <div class="confirmation-icon">✓</div>
-                <h3>Booking Confirmed!</h3>
-                <p>Your parking reservation has been successfully booked.</p>
-                
-                <div class="confirmation-details">
-                    <p><strong>Booking ID:</strong> <span id="confirmation-id"></span></p>
-                    <p><strong>Location:</strong> <span id="confirmation-location"></span></p>
-                    <p><strong>Slot Number:</strong> <span id="confirmation-slot"></span></p>
-                    <p><strong>Vehicle Type:</strong> <span id="confirmation-vehicle"></span></p>
-                    <p><strong>Duration:</strong> <span id="confirmation-duration"></span></p>
-                    <p><strong>Arrival Time:</strong> <span id="confirmation-time"></span></p>
-                    <p><strong>Amount Paid:</strong> $<span id="confirmation-amount"></span></p>
-                    <p><strong>Payment Method:</strong> <span id="confirmation-method"></span></p>
+            <div class="confirmation-container">
+                <div class="confirmation-header">
+                    <div class="confirmation-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Booking Confirmed!</h2>
+                    <p class="confirmation-subtitle">Your reservation has been successfully processed</p>
                 </div>
 
-                <div style="margin-top: 2rem;">
-                    <button onclick="downloadTicket()">Download Parking Ticket</button>
-                    <button class="secondary-btn" style="margin-left: 1rem;" onclick="newBooking()">New Booking</button>
+                <div class="confirmation-card">
+                    <div class="confirmation-details" id="confirmation-details">
+                        <!-- Details will be filled by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="confirmation-actions">
+                    <button class="btn-primary" onclick="downloadTicket()">
+                        <i class="fas fa-download"></i> Download Ticket
+                    </button>
+                    <button class="btn-secondary" id="view-map-btn">
+                        <i class="fas fa-map-marked-alt"></i> View on Map
+                    </button>
+                    <button class="btn-text" onclick="newBooking()">
+                        <i class="fas fa-plus-circle"></i> New Booking
+                    </button>
                 </div>
             </div>
         </section>
@@ -709,43 +809,9 @@
     </div>
 
     <script>
-        // Parking data structure
-        const parkingData = {
-            locations: {
-                "B1": {
-                    name: "Downtown Parking Plaza",
-                    distance: "0.3 miles",
-                    pricing: {
-                        "bike": { base: 2, hourly: 1 },
-                        "car": { base: 5, hourly: 2 },
-                        "heavy": { base: 10, hourly: 5 }
-                    }
-                },
-                "B2": {
-                    name: "Central Business Garage",
-                    distance: "0.5 miles",
-                    pricing: {
-                        "bike": { base: 1.5, hourly: 0.75 },
-                        "car": { base: 4, hourly: 1.5 },
-                        "heavy": { base: 8, hourly: 4 }
-                    }
-                },
-                "B3": {
-                    name: "Riverside Parking Complex",
-                    distance: "0.8 miles",
-                    pricing: {
-                        "bike": { base: 1, hourly: 0.5 },
-                        "car": { base: 3, hourly: 1 },
-                        "heavy": { base: 7, hourly: 3 }
-                    }
-                }
-            },
-            slots: {}
-        };
-
         // Current booking information
         let currentBooking = {
-            from: "",
+            from: "My Home Bhooja",
             to: "",
             vehicle: "",
             duration: 1,
@@ -753,42 +819,144 @@
             paymentMethod: null,
             bookingTime: null,
             totalPrice: 0,
-            bookingId: ""
+            bookingId: "",
+            userId: null
         };
 
-        // Initialize the app
-        function init() {
-            // Generate random slot availability data
-            generateParkingData();
+        // Parking slot data structure
+        const parkingData = {
+            basements: ['B1', 'B2', 'B3'],
+            slots: {},
+            // Update the pricing object in your parkingData
+            pricing: {
+                bike: { base: 20, hourly: 10 },    // ₹20 base + ₹10 per hour
+                car: { base: 40, hourly: 20 },     // ₹40 base + ₹20 per hour
+                heavy: { base: 80, hourly: 40 }    // ₹80 base + ₹40 per hour
+            }
+        };
+
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = 'index.html';
+                return;
+            }
             
-            // Set default arrival time to now + 30 minutes
+            const user = JSON.parse(userData);
+            currentBooking.userId = user.id;
+            
+            // Set profile initials
+            const profileIcon = document.getElementById('profile-icon');
+            if (user.name) {
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                profileIcon.textContent = initials;
+            }
+            
+            // Set default arrival time (now + 30 minutes)
             const now = new Date();
             now.setMinutes(now.getMinutes() + 30);
             document.getElementById('booking-time').valueAsDateTime = now.toISOString().slice(0, 16);
+            
+            // Generate parking slots
+            generateParkingSlots();
+            
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Find Parking button
+            document.getElementById('find-parking-btn').addEventListener('click', function() {
+                const destination = document.getElementById('to-location').value.trim().toLowerCase();
+                
+                const validDestinations = [
+                    "hi tech city", "charminar", "inorbit mall", "nexus", 
+                    "lulu mall", "birla mandir", "snow world", "apollo hospital"
+                ];
+                
+                let isValid = false;
+                let matchedKey = "";
+                
+                validDestinations.forEach(validDest => {
+                    if (destination.includes(validDest) || validDest.includes(destination)) {
+                        isValid = true;
+                        matchedKey = validDest;
+                    }
+                });
+                
+                if (!isValid) {
+                    alert("We currently only support parking at:\n" + 
+                        validDestinations.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(", "));
+                    return;
+                }
+                
+                currentBooking.to = matchedKey;
+                localStorage.setItem('destination', matchedKey);
+                document.getElementById('destination-display').textContent = matchedKey.charAt(0).toUpperCase() + matchedKey.slice(1);
+                nextStep(2);
+            });
+            
+            // View Map button
+            document.getElementById('view-map-btn').addEventListener('click', function() {
+                localStorage.setItem('bookingData', JSON.stringify(currentBooking));
+                window.location.href = 'location.html';
+            });
+
+            // Add this event listener in your setupEventListeners function
+document.getElementById('parking-time').addEventListener('change', function() {
+    currentBooking.duration = parseInt(this.value);
+    if (document.getElementById('parking-section').classList.contains('active')) {
+        displayParkingSlots();
+    }
+});
         }
 
-        // Generate random parking data
-        function generateParkingData() {
-            const basements = ["B1", "B2", "B3"];
-            const vehicleTypes = ["bike", "car", "heavy"];
+        // Generate random parking slots with different statuses
+        function generateParkingSlots() {
+    parkingData.basements.forEach(basement => {
+        parkingData.slots[basement] = {};
+        
+        // Generate slots for each vehicle type
+        Object.keys(parkingData.pricing).forEach(vehicleType => {
+            const slotCount = vehicleType === 'bike' ? 20 : 
+                             vehicleType === 'car' ? 15 : 10;
             
-            basements.forEach(basement => {
-                parkingData.slots[basement] = {};
-                vehicleTypes.forEach(vehicle => {
-                    // Generate between 10-20 slots per basement per vehicle type
-                    const slotCount = vehicle === "bike" ? 20 : 
-                                      vehicle === "car" ? 15 : 10;
-                    
-                    parkingData.slots[basement][vehicle] = Array.from({length: slotCount}, () => {
-                        const rand = Math.random();
-                        if (rand < 0.6) return 0; // Available
-                        if (rand < 0.9) return 1; // Occupied
-                        if (rand < 0.95) return 2; // Reserved
-                        return 3; // In Process
-                    });
+            parkingData.slots[basement][vehicleType] = [];
+            
+            for (let i = 1; i <= slotCount; i++) {
+                // Random status with different probabilities
+                const rand = Math.random();
+                let status;
+                if (rand < 0.5) {
+                    status = 'available'; // 50% available
+                } else if (rand < 0.8) {
+                    status = 'occupied'; // 30% occupied
+                } else if (rand < 0.95) {
+                    status = 'reserved'; // 15% reserved
+                } else {
+                    status = 'processing'; // 5% processing
+                }
+                
+                // Calculate price with some variation (±₹5)
+                const basePrice = parkingData.pricing[vehicleType].base;
+                const hourlyRate = parkingData.pricing[vehicleType].hourly;
+                const priceVariation = (Math.random() * 10) - 5; // -5 to +5
+                const pricePerHour = hourlyRate + priceVariation;
+                
+                parkingData.slots[basement][vehicleType].push({
+                    slotNumber: `${basement.charAt(1)}${i.toString().padStart(2, '0')}`,
+                    basementLevel: basement,
+                    vehicleType: vehicleType,
+                    status: status,
+                    pricePerHour: Math.max(5, pricePerHour) // Ensure minimum ₹5
                 });
-            });
-        }
+            }
+        });
+    });
+}
 
         // Move to next step
         function nextStep(step) {
@@ -861,97 +1029,81 @@
 
         // Validate step 1 inputs
         function validateStep1() {
-            const fromLocation = document.getElementById('from-location').value;
             const toLocation = document.getElementById('to-location').value;
             const vehicleType = document.getElementById('vehicle-type').value;
             
-            if (!fromLocation || !toLocation || !vehicleType) {
+            if (!toLocation || !vehicleType) {
                 alert("Please fill in all required fields");
                 return false;
             }
             
             // Save the data
-            currentBooking.from = fromLocation;
+            currentBooking.from = "My Home Bhooja";
             currentBooking.to = toLocation;
             currentBooking.vehicle = vehicleType;
             currentBooking.duration = parseInt(document.getElementById('parking-time').value);
             
-            // Update destination display
-            document.getElementById('destination-display').textContent = toLocation;
-            
             return true;
         }
 
-        // Display parking slots based on current search
+        // Display parking slots from generated data
         function displayParkingSlots() {
-            const { vehicle, duration } = currentBooking;
+            const { vehicle } = currentBooking;
             
-            Object.keys(parkingData.slots).forEach(basement => {
+            parkingData.basements.forEach(basement => {
                 const grid = document.getElementById(basement);
                 const statusDiv = document.getElementById(`${basement}-status`);
                 grid.innerHTML = "";
                 
-                const slots = parkingData.slots[basement][vehicle];
-                const availableCount = slots.filter(s => s === 0).length;
-                const totalCount = slots.length;
+                const basementSlots = parkingData.slots[basement][vehicle];
+                const availableSlots = basementSlots.filter(slot => slot.status === 'available');
+                statusDiv.textContent = `${availableSlots.length} slots available out of ${basementSlots.length}`;
                 
-                // Update status
-                statusDiv.textContent = `${availableCount} of ${totalCount} slots available`;
-                
-                // Create slot elements
-                slots.forEach((slot, index) => {
-                    const slotElement = document.createElement('div');
-                    slotElement.className = 'slot';
-                    slotElement.textContent = `P${index + 1}`;
-                    
-                    // Calculate price for this slot
-                    const priceInfo = parkingData.locations[basement].pricing[vehicle];
-                    const totalPrice = priceInfo.base + (priceInfo.hourly * duration);
-                    
-                    // Add price element
-                    const priceElement = document.createElement('div');
-                    priceElement.className = 'slot-price';
-                    priceElement.textContent = `$${totalPrice.toFixed(2)}`;
-                    slotElement.appendChild(priceElement);
-                    
-                    // Set slot status
-                    switch(slot) {
-                        case 0: // Available
-                            slotElement.classList.add('available');
-                            slotElement.addEventListener('click', () => openBookingModal(basement, index, totalPrice));
-                            break;
-                        case 1: // Occupied
-                            slotElement.classList.add('occupied');
-                            break;
-                        case 2: // Reserved
-                            slotElement.classList.add('reserved');
-                            break;
-                        case 3: // In Process
-                            slotElement.classList.add('processing');
-                            break;
-                    }
-                    
-                    grid.appendChild(slotElement);
-                });
+                basementSlots.forEach(slot => {
+    const slotElement = document.createElement('div');
+    slotElement.className = `slot ${slot.status}`;
+    slotElement.textContent = `P${slot.slotNumber}`;
+    
+    const totalPrice = (slot.pricePerHour * currentBooking.duration).toFixed(2);
+    const priceElement = document.createElement('div');
+    priceElement.className = 'slot-price';
+    priceElement.textContent = `₹${totalPrice}`;
+    slotElement.appendChild(priceElement);
+    
+    if (slot.status === 'available') {
+        slotElement.addEventListener('click', () => 
+            openBookingModal(slot.basementLevel, slot.slotNumber, slot.pricePerHour)
+        );
+    } else {
+        slotElement.style.cursor = 'not-allowed';
+    }
+    
+    grid.appendChild(slotElement);
+});
             });
         }
 
-        // Open booking modal
-        function openBookingModal(basement, slotIndex, price) {
-            const location = parkingData.locations[basement];
-            const slotNumber = `P${slotIndex + 1}`;
-            
-            document.getElementById('selected-slot-info').textContent = 
-                `Location: ${location.name} (${location.distance})\nSlot: ${slotNumber}`;
-                
-            document.getElementById('selected-price').textContent = 
-                `Total Price: $${price.toFixed(2)} (${currentBooking.duration} hrs)`;
-                
-            document.getElementById('booking-modal').style.display = 'flex';
-            
-            // Store the selected slot info temporarily
-            currentBooking.selectedSlot = { basement, slotIndex, price };
-        }
+        // Open booking modal with selected slot
+        function openBookingModal(basement, slotNumber, pricePerHour) {
+    const duration = currentBooking.duration;
+    const totalPrice = (pricePerHour * duration).toFixed(2);
+    
+    document.getElementById('selected-slot-info').textContent = 
+        `Location: ${basement}, Slot: P${slotNumber}`;
+        
+    document.getElementById('selected-price').textContent = 
+        `Price: ₹${pricePerHour}/hr × ${duration} hr = ₹${totalPrice}`;
+    
+    document.getElementById('booking-modal').style.display = 'flex';
+    
+    // Store both pricePerHour and calculated totalPrice
+    currentBooking.selectedSlot = { 
+        basement, 
+        slotNumber, 
+        pricePerHour,
+        totalPrice: parseFloat(totalPrice)
+    };
+}
 
         // Close booking modal
         function closeBookingModal() {
@@ -959,7 +1111,7 @@
         }
 
         // Confirm booking from modal
-        function confirmBooking() {
+        async function confirmBooking() {
             const bookingTime = document.getElementById('booking-time').value;
             
             if (!bookingTime) {
@@ -967,33 +1119,60 @@
                 return;
             }
             
-            // Save booking time
             currentBooking.bookingTime = bookingTime;
             currentBooking.totalPrice = currentBooking.selectedSlot.price;
             
-            // Enable proceed to payment button
+            // Generate a booking ID
+            currentBooking.bookingId = 'BK-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+            
+            // Mark slot as reserved in our data
+            const { basement, slotNumber } = currentBooking.selectedSlot;
+            const vehicleType = currentBooking.vehicle;
+            
+            // Find and update the slot status
+            parkingData.basements.forEach(b => {
+                if (b === basement) {
+                    parkingData.slots[b][vehicleType].forEach(slot => {
+                        if (slot.slotNumber === slotNumber) {
+                            slot.status = 'reserved';
+                        }
+                    });
+                }
+            });
+
+            await fetch('http://localhost:5000/save-booking', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: currentBooking.userId,
+      location: currentBooking.selectedSlot.basement,
+      slot: currentBooking.selectedSlot.slotNumber,
+      vehicleType: currentBooking.vehicle,
+      duration: currentBooking.duration,
+      arrivalTime: currentBooking.bookingTime,
+      price: currentBooking.totalPrice
+    })
+  });
+            
             document.getElementById('proceed-to-payment-btn').disabled = false;
-            
-            // Close modal
             closeBookingModal();
-            
-            // Show confirmation
-            alert(`Your parking spot has been reserved!\nTotal: $${currentBooking.totalPrice.toFixed(2)}`);
+            nextStep(3); // Proceed to payment
         }
 
-        // Display payment details
-        function displayPaymentDetails() {
-            const location = parkingData.locations[currentBooking.selectedSlot.basement];
-            const slotNumber = `P${currentBooking.selectedSlot.slotIndex + 1}`;
-            const vehicleType = document.getElementById('vehicle-type').options[document.getElementById('vehicle-type').selectedIndex].text;
-            
-            document.getElementById('payment-location').textContent = `${location.name} (${location.distance})`;
-            document.getElementById('payment-slot').textContent = slotNumber;
-            document.getElementById('payment-vehicle').textContent = vehicleType;
-            document.getElementById('payment-duration').textContent = `${currentBooking.duration} hour${currentBooking.duration > 1 ? 's' : ''}`;
-            document.getElementById('payment-time').textContent = new Date(currentBooking.bookingTime).toLocaleString();
-            document.getElementById('payment-amount').textContent = currentBooking.totalPrice.toFixed(2);
-        }
+        // Add this function to your existing JavaScript
+async function saveBookingToDatabase(bookingData) {
+  try {
+    const response = await fetch('http://localhost:5000/save-parking-booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bookingData)
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error saving booking:", error);
+    return { success: false };
+  }
+}
 
         // Select payment method
         function selectPaymentMethod(method) {
@@ -1016,7 +1195,6 @@
 
         // Process payment
         function processPayment() {
-            // Validate credit card details if that method is selected
             if (currentBooking.paymentMethod === 'credit') {
                 const cardNumber = document.getElementById('card-number').value;
                 const cardName = document.getElementById('card-name').value;
@@ -1039,53 +1217,116 @@
                 }
             }
             
-            // Generate a booking ID
-            currentBooking.bookingId = 'BK-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-            
-            // In a real app, you would send the payment details to your backend here
-            console.log("Processing payment:", currentBooking);
-            
-            // Move to confirmation step
             nextStep(4);
         }
 
+        // Display payment details
+        function displayPaymentDetails() {
+    const location = currentBooking.selectedSlot.basement;
+    const slotNumber = currentBooking.selectedSlot.slotNumber;
+    const vehicleType = document.getElementById('vehicle-type').options[document.getElementById('vehicle-type').selectedIndex].text;
+    
+    document.getElementById('payment-location').textContent = location;
+    document.getElementById('payment-slot').textContent = `P${slotNumber}`;
+    document.getElementById('payment-vehicle').textContent = vehicleType;
+    document.getElementById('payment-duration').textContent = `${currentBooking.duration} hour${currentBooking.duration > 1 ? 's' : ''}`;
+    document.getElementById('payment-time').textContent = new Date(currentBooking.bookingTime).toLocaleString();
+    document.getElementById('payment-amount').textContent = currentBooking.selectedSlot.totalPrice.toFixed(2);
+}
+
         // Display confirmation details
         function displayConfirmation() {
-            const location = parkingData.locations[currentBooking.selectedSlot.basement];
-            const slotNumber = `P${currentBooking.selectedSlot.slotIndex + 1}`;
+            const { selectedSlot, duration, bookingTime, totalPrice, bookingId } = currentBooking;
             const vehicleType = document.getElementById('vehicle-type').options[document.getElementById('vehicle-type').selectedIndex].text;
             const paymentMethod = document.querySelector('.payment-method.selected h4').textContent;
             
-            document.getElementById('confirmation-id').textContent = currentBooking.bookingId;
-            document.getElementById('confirmation-location').textContent = `${location.name} (${location.distance})`;
-            document.getElementById('confirmation-slot').textContent = slotNumber;
-            document.getElementById('confirmation-vehicle').textContent = vehicleType;
-            document.getElementById('confirmation-duration').textContent = `${currentBooking.duration} hour${currentBooking.duration > 1 ? 's' : ''}`;
-            document.getElementById('confirmation-time').textContent = new Date(currentBooking.bookingTime).toLocaleString();
-            document.getElementById('confirmation-amount').textContent = currentBooking.totalPrice.toFixed(2);
-            document.getElementById('confirmation-method').textContent = paymentMethod;
+            const options = { 
+                weekday: 'short', 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const formattedTime = new Date(bookingTime).toLocaleString('en-IN', options);
             
-            // Update the slot status to reserved in our data
-            parkingData.slots[currentBooking.selectedSlot.basement][currentBooking.vehicle][currentBooking.selectedSlot.slotIndex] = 2;
+            document.getElementById('confirmation-details').innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Booking ID:</span>
+                    <span class="detail-value">${bookingId}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value">${selectedSlot.basement}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Slot Number:</span>
+                    <span class="detail-value">P-${selectedSlot.slotNumber}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Vehicle:</span>
+                    <span class="detail-value">${vehicleType}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Duration:</span>
+                    <span class="detail-value">${duration} hour${duration > 1 ? 's' : ''}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Arrival Time:</span>
+                    <span class="detail-value">${formattedTime}</span>
+                </div>
+                <div class="detail-row highlight">
+                    <span class="detail-label">Amount Paid:</span>
+                    <span class="detail-value">₹${totalPrice.toFixed(2)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Method:</span>
+                    <span class="detail-value">${paymentMethod}</span>
+                </div>
+            `;
         }
 
         // Download parking ticket
         function downloadTicket() {
-            alert("Parking ticket would be downloaded in a real implementation");
-            // In a real app, this would generate and download a PDF ticket
+            const { bookingId, selectedSlot, bookingTime, duration, totalPrice } = currentBooking;
+            const vehicleType = document.getElementById('vehicle-type').options[document.getElementById('vehicle-type').selectedIndex].text;
+            
+            // Create a simple ticket content
+            const ticketContent = `
+                SmartPark Parking Ticket
+                ----------------------------
+                Booking ID: ${bookingId}
+                Slot: P-${selectedSlot.slotNumber} (${selectedSlot.basement})
+                Vehicle: ${vehicleType}
+                Duration: ${duration} hours
+                Arrival: ${new Date(bookingTime).toLocaleString()}
+                Total Paid: ₹${totalPrice}
+                ----------------------------
+                Thank you for using SmartPark!
+            `;
+            
+            // Create download link
+            const blob = new Blob([ticketContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `parking_ticket_${bookingId}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         // Start a new booking
         function newBooking() {
             // Reset form
-            document.getElementById('from-location').value = '';
             document.getElementById('to-location').value = '';
             document.getElementById('vehicle-type').value = '';
             document.getElementById('parking-time').value = '1';
             
             // Reset booking data
             currentBooking = {
-                from: "",
+                from: "My Home Bhooja",
                 to: "",
                 vehicle: "",
                 duration: 1,
@@ -1093,7 +1334,8 @@
                 paymentMethod: null,
                 bookingTime: null,
                 totalPrice: 0,
-                bookingId: ""
+                bookingId: "",
+                userId: currentBooking.userId
             };
             
             // Reset payment method selection
@@ -1105,12 +1347,19 @@
                 el.classList.remove('active');
             });
             
+            // Show credit card details by default
+            document.getElementById('credit-card-details').classList.add('active');
+            
             // Go back to step 1
             nextStep(1);
         }
 
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
+        // Close popup when clicking outside of it
+        document.getElementById('booking-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('booking-modal')) {
+                closeBookingModal();
+            }
+        });
     </script>
 </body>
 </html>
